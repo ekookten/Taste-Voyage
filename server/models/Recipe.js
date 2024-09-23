@@ -6,13 +6,14 @@ const recipeSchema = new Schema({
       type: String,
     },
   ],
-  description: {
+  summary: {
     type: String,
     required: true,
   },
   recipeId: {
     type: String,
     required: true,
+    unique: true,
   },
   image: {
     type: String,
@@ -30,6 +31,11 @@ const recipeSchema = new Schema({
       ref: 'Ingredient',
     },
   ],
+  instructions: [
+    {
+      type: String,
+    },
+  ],
   comments: [
     {
       commentText: {
@@ -45,7 +51,7 @@ const recipeSchema = new Schema({
       createdAt: {
         type: Date,
         default: Date.now,
-        get: (timestamp) => dateFormat(timestamp),
+        get: (timestamp) => timestamp.toLocaleString(),
       },
     },
   ],
