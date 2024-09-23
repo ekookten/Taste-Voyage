@@ -1,7 +1,10 @@
 import React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import RecipesComponent from './RecipesComponent';
+import { Outlet } from 'react-router-dom';
+
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 const App = () => {
   // Apollo Client setup with HTTP Link
@@ -26,9 +29,12 @@ const App = () => {
 
   return (
     <ApolloProvider client={client}>
-      <div className="App">
-        <h1>Recipe App</h1>
-        <RecipesComponent /> {/* Your component that uses the API */}
+      <div>
+        <Header />
+        <div>
+          <Outlet />
+        </div>
+        <Footer />
       </div>
     </ApolloProvider>
   );
