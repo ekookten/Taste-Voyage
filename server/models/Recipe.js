@@ -1,6 +1,4 @@
-const { Schema } = require('mongoose');
-
-// const { Ingredient } = require('./Ingredient');
+const { Schema, model } = require('mongoose');
 
 const recipeSchema = new Schema({
   authors: [
@@ -26,12 +24,33 @@ const recipeSchema = new Schema({
     type: String,
     required: true,
   },
-  ingredients: [  // Change from singular to plural to support multiple ingredients
+  ingredients: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Ingredient',
     },
   ],
+  comments: [
+    {
+      commentText: {
+        type: String,
+        required: true,
+        minlength: 1,
+        maxlength: 280,
+      },
+      commentAuthor: {
+        type: String,
+        required: true,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+        get: (timestamp) => dateFormat(timestamp),
+      },
+    },
+  ],
 });
 
-module.exports = recipeSchema;
+const Recipe = model('Recipe', recipeSchema);
+
+module.exports = Recipe;
