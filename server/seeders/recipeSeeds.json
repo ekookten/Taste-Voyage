@@ -1,0 +1,204 @@
+[
+    {
+        "authors": "Goksel Gokkocabas",
+        "title": "Spaghetti Bolognese",
+        "summary": "This is a delicious recipe for Spaghetti Bolognese",
+        "recipeId": "1",
+        "ingredients": [
+            {
+                "name": "Spaghetti",
+                "quantity": "200",
+                "unit": "grams"
+            },
+            {
+                "name": "Minced beef",
+                "quantity": "500",
+                "unit": "grams"
+            },
+            {
+                "name": "Tomato sauce",
+                "quantity": "1",
+                "unit": "cup"
+            },
+            {
+                "name": "Onion",
+                "quantity": "1",
+                "unit": "medium"
+            },
+            {
+                "name": "Garlic",
+                "quantity": "2",
+                "unit": "cloves"
+            },
+            {
+                "name": "Carrot",
+                "quantity": "1",
+                "unit": "medium"
+            },
+            {
+                "name": "Celery",
+                "quantity": "1",
+                "unit": "stalk"
+            },
+            {
+                "name": "Olive oil",
+                "quantity": "2",
+                "unit": "tablespoons"
+            },
+            {
+                "name": "Red wine",
+                "quantity": "1/2",
+                "unit": "cup"
+            },
+            {
+                "name": "Salt",
+                "quantity": "to taste",
+                "unit": ""
+            },
+            {
+                "name": "Black pepper",
+                "quantity": "to taste",
+                "unit": ""
+            },
+            {
+                "name": "Parmesan cheese",
+                "quantity": "to serve",
+                "unit": ""
+            }
+        ],
+        "instructions": [
+            "Cook the spaghetti according to the package instructions.",
+            "Heat olive oil in a large pan over medium heat.",
+            "Add chopped onion, garlic, carrot, and celery. Cook until softened.",
+            "Add minced beef and cook until browned.",
+            "Pour in the red wine and let it simmer until reduced by half.",
+            "Add tomato sauce, salt, and black pepper. Let it simmer for 20 minutes.",
+            "Serve the sauce over the cooked spaghetti and top with Parmesan cheese."
+        ]
+    },
+    {
+        "authors": "Bo Amarant",
+        "title": "Shrimp Alfredo",
+        "summary": "This is a delicious recipe for Shrimp Alfredo",
+        "recipeId": "2",
+        "ingredients": [
+            {
+                "name": "Fettuccine",
+                "quantity": "200",
+                "unit": "grams"
+            },
+            {
+                "name": "Shrimp",
+                "quantity": "35",
+                "unit": "count"
+            },
+            {
+                "name": "Butter",
+                "quantity": "2",
+                "unit": "tablespoons"
+            },
+            {
+                "name": "Garlic",
+                "quantity": "3",
+                "unit": "cloves"
+            },
+            {
+                "name": "Heavy cream",
+                "quantity": "1",
+                "unit": "cup"
+            },
+            {
+                "name": "Parmesan cheese",
+                "quantity": "1/2",
+                "unit": "cup"
+            },
+            {
+                "name": "Salt",
+                "quantity": "to taste",
+                "unit": ""
+            },
+            {
+                "name": "Black pepper",
+                "quantity": "to taste",
+                "unit": ""
+            },
+            {
+                "name": "Parsley",
+                "quantity": "2",
+                "unit": "tablespoons"
+            }
+        ],
+        "instructions": [
+            "Cook the fettuccine according to the package instructions.",
+            "In a large pan, melt butter over medium heat.",
+            "Add minced garlic and cook until fragrant.",
+            "Add shrimp and cook until pink and opaque.",
+            "Pour in the heavy cream and bring to a simmer.",
+            "Stir in Parmesan cheese, salt, and black pepper until the sauce thickens.",
+            "Toss the cooked fettuccine in the sauce.",
+            "Garnish with chopped parsley before serving."
+        ]
+    },
+    {
+        "authors": "Erkan Okten",
+        "title": "Beyti Kebab",
+        "summary": "This is a traditional Turkish recipe for Beyti Kebab, made with ground lamb or beef wrapped in lavash bread and served with yogurt and tomato sauce.",
+        "recipeId": "3",
+        "ingredients": [
+            {
+                "name": "Ground lamb or beef",
+                "quantity": "500",
+                "unit": "grams"
+            },
+            {
+                "name": "Lavash bread",
+                "quantity": "4",
+                "unit": "pieces"
+            },
+            {
+                "name": "Yogurt",
+                "quantity": "1",
+                "unit": "cup"
+            },
+            {
+                "name": "Tomato sauce",
+                "quantity": "1",
+                "unit": "cup"
+            },
+            {
+                "name": "Butter",
+                "quantity": "2",
+                "unit": "tablespoons"
+            },
+            {
+                "name": "Garlic",
+                "quantity": "2",
+                "unit": "cloves"
+            },
+            {
+                "name": "Paprika",
+                "quantity": "1",
+                "unit": "teaspoon"
+            },
+            {
+                "name": "Salt",
+                "quantity": "to taste",
+                "unit": ""
+            },
+            {
+                "name": "Black pepper",
+                "quantity": "to taste",
+                "unit": ""
+            }
+        ],
+        "instructions": [
+            "Preheat the oven to 200°C (392°F).",
+            "In a bowl, mix ground lamb or beef with minced garlic, paprika, salt, and black pepper.",
+            "Shape the mixture into long, thin kebabs.",
+            "Wrap each kebab in a piece of lavash bread.",
+            "Place the wrapped kebabs on a baking sheet and bake for 20-25 minutes.",
+            "In a small pan, melt butter and mix with tomato sauce.",
+            "Serve the kebabs with yogurt and tomato sauce."
+        ]
+    }
+]

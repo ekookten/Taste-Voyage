@@ -6,6 +6,9 @@ const IngredientSchema = new Schema({
     type: String,
     required: true,
   },
+  unit: {
+    type: String,
+  },
   quantity: {
     type: String,
     required: true,
