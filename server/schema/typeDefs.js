@@ -47,11 +47,33 @@ const typeDefs = `
     text: String!
     step: Int!
   }
+input recipeInput {
+  title: String!
+  summary: String!
+  authors: [String]
+  ingredients: [IngredientInput]
+  instructions: [InstructionInput]
+  image: String
+  link: String
+
+}
+
+input IngredientInput {
+name: String!
+unit: String
+quantity: Int!
+}
+
+input InstructionInput {
+step: Int!
+text: String!
+}
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    addRecipe(recipeText: String!): Recipe
+    addRecipe(recipeInput: recipeInput!): Recipe
+
     addComment(recipeId: ID!, commentText: String!): Recipe
     removeRecipe(recipeId: ID!): Recipe
     removeComment(recipeId: ID!, commentId: ID!): Recipe
