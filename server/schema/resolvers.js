@@ -1,4 +1,4 @@
-const { User, Recipe } = require("../models");
+const { User, Recipe , Ingredient, Instruction} = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
@@ -40,13 +40,13 @@ const resolvers = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError("Incorrect credentials");
+        throw AuthenticationError;
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError("Incorrect credentials");
+        throw AuthenticationError;
       }
 
       const token = signToken(user);
@@ -67,24 +67,30 @@ const resolvers = {
           }
         );
       }
-      throw new AuthenticationError("You need to be logged in!");
+      throw AuthenticationError;
     },
-    addRecipe: async (parent,  args , context) => {
-      // Added title, description, and ingredients to the input
-      if (context.user) {
-        const recipe = await Recipe.create({
-        ...args, 
-          authors: [context.user.username],
-        });
-
-        await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $addToSet: { savedRecipes: recipe._id } }
+    addRecipe: async (parent, args, context) => {
+      try {
+        const ingredientIds = await Promise.all(
+          args.recipeInput.ingredients.map(async (ingredient) => {
+            const newIngredient = await Ingredient.create(ingredient);
+            return newIngredient._id;
+          })
         );
 
-        return recipe;
+        const recipe = await Recipe.create({
+          ...args.recipeInput,
+          ingredients: ingredientIds,
+        });
+
+        // Fetch the full recipe including the populated ingredients
+        const fullRecipe = await Recipe.findById(recipe._id).populate('ingredients');
+
+        return fullRecipe; // Return the full recipe with populated ingredients
+      } catch (error) {
+        console.error('Error:', error);
+        throw new Error(error.message);
       }
-      throw new AuthenticationError("You need to be logged in!");
     },
     removeRecipe: async (parent, { recipeId }, context) => {
       if (context.user) {
@@ -100,7 +106,7 @@ const resolvers = {
 
         return recipe;
       }
-      throw new AuthenticationError("You need to be logged in!");
+      throw AuthenticationError;
     },
     removeComment: async (parent, { recipeId, commentId }, context) => {
       if (context.user) {
@@ -117,7 +123,7 @@ const resolvers = {
           { new: true }
         );
       }
-      throw new AuthenticationError("You need to be logged in!");
+      throw AuthenticationError;
     },
   },
 };
