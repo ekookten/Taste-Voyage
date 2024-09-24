@@ -10,11 +10,6 @@ const recipeSchema = new Schema({
     type: String,
     required: true,
   },
-  recipeId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   image: {
     type: String,
   },
@@ -33,7 +28,8 @@ const recipeSchema = new Schema({
   ],
   instructions: [
     {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Instruction',
     },
   ],
   comments: [

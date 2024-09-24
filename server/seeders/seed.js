@@ -1,5 +1,5 @@
 const db = require('../config/connection');
-const { User, Recipe, Ingredient } = require('../models');
+const { User, Recipe, Ingredient, Instruction } = require('../models');
 const userSeeds = require('./userSeeds.json');
 const recipeSeeds = require('./recipeSeeds.json');
 const cleanDB = require('./cleanDB');
@@ -20,11 +20,16 @@ db.once('open', async () => {
         const ingredient = await Ingredient.create(ingredientData);
         return ingredient._id;
       }));
+      const instructionIds = await Promise.all(recipeData.instructions.map(async instructionData => {
+        const instruction = await Instruction.create(instructionData);
+        return instruction._id;
+      }));
 
       // Create the recipe with the ingredients and other data
       const recipe = await Recipe.create({
         ...recipeData,
-        ingredients: ingredientIds
+        ingredients: ingredientIds,
+        instructions: instructionIds,
       });
 
       // Find the corresponding user by recipeAuthor

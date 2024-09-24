@@ -3,16 +3,17 @@ const typeDefs = `
     _id: ID
     username: String
     email: String
-    password: String
-    recipes: [Recipe]!
+    savedRecipes: [Recipe]
   }
 
   type Recipe {
     _id: ID
-    recipeText: String
-    recipeAuthor: String
-    createdAt: String
-    comments: [Comment]!
+    summary: String
+    authors: [String]
+    title: String
+    comment: [Comment]
+    instructions: [Instruction]
+    ingredients: [Ingredient]
   }
 
   type Comment {
@@ -33,6 +34,18 @@ const typeDefs = `
     recipes(username: String): [Recipe]
     recipe(recipeId: ID!): Recipe
     me: User
+  }
+
+  type Ingredient {
+    _id: ID!
+   name: String!
+   unit: String
+   quantity: String!
+  }
+  type Instruction {
+    _id: ID!
+    text: String!
+    step: Int!
   }
 
   type Mutation {
