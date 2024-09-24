@@ -13,10 +13,6 @@ const IngredientSchema = new Schema({
     type: String,
     required: true,
   },
-  recipe: {
-    type: Schema.Types.ObjectId,
-    ref: 'Recipe',
-  },
 });
 
 module.exports = mongoose.model('Ingredient', IngredientSchema);
