@@ -68,39 +68,47 @@ const resolvers = {
     },
     addRecipe: async (parent, args, context) => {
       try {
+        // Check if the user is authenticated
+        if (!context.user) {
+          throw new Error('Authentication required');
+        }
+    
+        // Add the userId to the recipe input
+        args.recipeInput.user = context.user._id; 
+    
+        // Process ingredients
         args.recipeInput.ingredients = await Promise.all(
           args.recipeInput.ingredients.map(async (ingredient) => {
-            console.log(ingredient);
             const newIngredient = await Ingredient.create(ingredient);
-            console.log(ingredient);
             return newIngredient._id;
           })
         );
-
+    
+        // Process instructions
         args.recipeInput.instructions = await Promise.all(
-          args.recipeInput.instructions.map (async (instruction) => {
-            console.log(instruction);
+          args.recipeInput.instructions.map(async (instruction) => {
             const newInstruction = await Instruction.create(instruction);
-            console.log(instruction);
             return newInstruction._id;
           })
         );
-        console.log(args.recipeInput);
+    
+        // Create the recipe
         const recipe = await Recipe.create({
           ...args.recipeInput,
         });
-
+    
         // Fetch the full recipe including the populated ingredients
         const fullRecipe = await Recipe.findById(recipe._id)
-        .populate('ingredients')
-        .populate('instructions');
-
+          .populate('ingredients')
+          .populate('instructions');
+    
         return fullRecipe; // Return the full recipe with populated ingredients
       } catch (error) {
         console.error('Error:', error);
         throw new Error(error.message);
       }
     },
+    
     removeRecipe: async (parent, { recipeId }, context) => {
       if (context.user) {
         const recipe = await Recipe.findOneAndDelete({
