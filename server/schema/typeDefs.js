@@ -47,6 +47,7 @@ const typeDefs = `
     text: String!
     step: Int!
   }
+
 input recipeInput {
   title: String!
   summary: String!
@@ -60,7 +61,7 @@ input recipeInput {
 
 input IngredientInput {
 name: String!
-unit: String
+unit: String!
 quantity: Int!
 }
 

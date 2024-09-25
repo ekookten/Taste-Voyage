@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-
+const dateFormat = require('../utils/dateFormat');
 const recipeSchema = new Schema({
   authors: [
     {
@@ -47,7 +47,7 @@ const recipeSchema = new Schema({
       createdAt: {
         type: Date,
         default: Date.now,
-        get: (timestamp) => timestamp.toLocaleString(),
+        get: (timestamp) => dateFormat(timestamp),
       },
     },
   ],
