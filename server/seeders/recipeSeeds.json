@@ -46,23 +46,23 @@
       },
       {
         "name": "Red wine",
-        "quantity": "1/2",
+        "quantity": "0.5",
         "unit": "cup"
       },
       {
         "name": "Salt",
-        "quantity": "to taste",
-        "unit": ""
+        "quantity": "1",
+        "unit": "teaspoon"
       },
       {
         "name": "Black pepper",
-        "quantity": "to taste",
-        "unit": ""
+        "quantity": "1",
+        "unit": "teaspoon"
       },
       {
         "name": "Parmesan cheese",
-        "quantity": "to serve",
-        "unit": ""
+        "quantity": "1",
+        "unit": "teaspoon"
       }
     ],
     "instructions": [
@@ -128,18 +128,18 @@
       },
       {
         "name": "Parmesan cheese",
-        "quantity": "1/2",
+        "quantity": "0.5",
         "unit": "cup"
       },
       {
         "name": "Salt",
-        "quantity": "to taste",
-        "unit": ""
+        "quantity": "1",
+        "unit": "teaspoon"
       },
       {
         "name": "Black pepper",
-        "quantity": "to taste",
-        "unit": ""
+        "quantity": "1",
+        "unit": "teaspoon"
       },
       {
         "name": "Parsley",
@@ -224,13 +224,13 @@
       },
       {
         "name": "Salt",
-        "quantity": "to taste",
-        "unit": ""
+        "quantity": "1",
+        "unit": "teaspoon"
       },
       {
         "name": "Black pepper",
-        "quantity": "to taste",
-        "unit": ""
+        "quantity": "1",
+        "unit": "teaspoon"
       }
     ],
     "instructions": [
