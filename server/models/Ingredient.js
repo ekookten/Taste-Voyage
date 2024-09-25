@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 
 const IngredientSchema = new Schema({
   name: {
@@ -8,11 +7,14 @@ const IngredientSchema = new Schema({
   },
   unit: {
     type: String,
+    default: 'N/A',
   },
   quantity: {
-    type: String,
+    type: Number,
     required: true,
   },
 });
 
-module.exports = mongoose.model('Ingredient', IngredientSchema);
+const Ingredient = model('Ingredient', IngredientSchema);
+
+module.exports = Ingredient;

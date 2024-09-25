@@ -71,20 +71,32 @@ const resolvers = {
     },
     addRecipe: async (parent, args, context) => {
       try {
-        const ingredientIds = await Promise.all(
+        args.recipeInput.ingredients = await Promise.all(
           args.recipeInput.ingredients.map(async (ingredient) => {
+            console.log(ingredient);
             const newIngredient = await Ingredient.create(ingredient);
+            console.log(ingredient);
             return newIngredient._id;
           })
         );
 
+        args.recipeInput.instructions = await Promise.all(
+          args.recipeInput.instructions.map (async (instruction) => {
+            console.log(instruction);
+            const newInstruction = await Instruction.create(instruction);
+            console.log(instruction);
+            return newInstruction._id;
+          })
+        );
+        console.log(args.recipeInput);
         const recipe = await Recipe.create({
           ...args.recipeInput,
-          ingredients: ingredientIds,
         });
 
         // Fetch the full recipe including the populated ingredients
-        const fullRecipe = await Recipe.findById(recipe._id).populate('ingredients');
+        const fullRecipe = await Recipe.findById(recipe._id)
+        .populate('ingredients')
+        .populate('instructions');
 
         return fullRecipe; // Return the full recipe with populated ingredients
       } catch (error) {
