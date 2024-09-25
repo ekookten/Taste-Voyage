@@ -11,6 +11,7 @@ const typeDefs = `
     summary: String
     authors: [String]
     title: String
+    image: String
     comment: [Comment]
     instructions: [Instruction]
     ingredients: [Ingredient]
@@ -29,7 +30,6 @@ const typeDefs = `
   }
 
   type Query {
-    users: [User]
     user(username: String!): User
     recipes(username: String): [Recipe]
     recipe(recipeId: ID!): Recipe

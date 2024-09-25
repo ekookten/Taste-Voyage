@@ -2,14 +2,15 @@ import React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { Outlet } from 'react-router-dom';
+import { useState } from 'react';
 
-import Header from './components/Header';
+import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 const App = () => {
   // Apollo Client setup with HTTP Link
   const httpLink = createHttpLink({
-    uri: process.env.GRAPHQL_URI || 'http://localhost:4000/graphql',
+    uri:'http://localhost:4000/graphql',
   });
 
   // Adding API key to headers
@@ -30,7 +31,7 @@ const App = () => {
   return (
     <ApolloProvider client={client}>
       <div>
-        <Header />
+        <Navbar />
         <div>
           <Outlet />
         </div>
