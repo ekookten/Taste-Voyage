@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import SingleRecipe from './pages/SingleRecipe';
 import Profile from './pages/Profile';
 import Error from './pages/Error';
+import SearchRecipe from './pages/SearchRecipe.jsx';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       }, {
         path: '/signup',
         element: <Signup />
+      },
+      {
+        path: '/search',
+        element: <SearchRecipe />
       }, {
         path: '/profiles/:username',
         element: <Profile />
