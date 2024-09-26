@@ -56,18 +56,6 @@ function Home() {
           </div>
         </div>
       </div>
-
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <ul>
-          {recipes.map(recipe => (
-            <li key={recipe.id}>
-              <Link to={`/recipe/${recipe.id}`}>{recipe.title}</Link>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }
