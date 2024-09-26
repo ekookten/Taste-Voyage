@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client"; // Import Apollo Client's useMutation
 import { SAVE_RECIPE } from "../utils/mutations"; // Import the SAVE_RECIPE mutation
 import Auth from "../utils/auth";
 import { saveRecipeIds, getSavedRecipeIds } from "../utils/localStorage";
 import { searchSpoonacular } from "../utils/API";
 
-const SearchRecipes = () => {
+const SearchRecipes = (props) => {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [savedRecipeIds, setSavedRecipeIds] = useState(getSavedRecipeIds());
@@ -32,7 +33,6 @@ const SearchRecipes = () => {
       }
 
       const {results} = await response.json();
-      console.log(results);
 
       const recipeInput = results.map((recipe) => ({
         recipeId: recipe.id,
@@ -147,7 +147,12 @@ const SearchRecipes = () => {
                           ? "This recipe has already been saved!"
                           : "Save this Recipe!"}
                       </button>
+                      
                     )}
+                     <Link 
+                    to={`/recipe/${recipe.recipeId}`} // Use Link to pass the recipeId
+                    className="button is-primary is-fullwidth mt-3"
+                  >View Details</Link>
                   </div>
                 </div>
               </div>
