@@ -18,7 +18,7 @@ const App = () => {
     return {
       headers: {
         ...headers,
-        authorization: `ApiKey ${process.env.API_KEY}`,
+        authorization: `e675da75cbd340718699bc2539228d08`,
       },
     };
   });
