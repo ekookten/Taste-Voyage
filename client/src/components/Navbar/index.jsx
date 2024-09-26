@@ -7,7 +7,7 @@ const AppNavbar = () => {
         <div className="container is-fluid">
           <div className="navbar-brand">
             <Link className="navbar-item has-text-weight-bold is-size-4" to='/'>
-              Tasty Recipe Search
+              Taste Voyage
             </Link>
             <div className="navbar-burger" data-target="navbarMenu" onClick={() => document.querySelector('.navbar-menu').classList.toggle('is-active')}>
               <span></span>
