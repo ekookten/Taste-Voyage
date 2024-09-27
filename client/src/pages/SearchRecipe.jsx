@@ -1,216 +1,173 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client'; // Import useMutation from Apollo Client
-import { ADD_RECIPE } from '../utils/mutations'; // Import your ADD_RECIPE mutation
-import Auth from '../utils/auth'; // Import the Auth utility
-import decode from 'jwt-decode';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useMutation } from "@apollo/client"; // Import Apollo Client's useMutation
+import { SAVE_RECIPE } from "../utils/mutations"; // Import the SAVE_RECIPE mutation
+import Auth from "../utils/auth";
+import { searchSpoonacular } from "../utils/API";
 
-const AddRecipe = () => {
-    const navigate = useNavigate(); // Initialize navigate for redirection
-    const [addRecipe] = useMutation(ADD_RECIPE); // Use the ADD_RECIPE mutation
+const SearchRecipes = (props) => {
+  const [searchedRecipes, setSearchedRecipes] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [savedRecipeIds, setSavedRecipeIds] = useState([]);
 
-    // Check if user is logged in and get username
-    const loggedIn = Auth.loggedIn();
-    let username = '';
+  const [saveRecipe] = useMutation(SAVE_RECIPE); // Use the SAVE_RECIPE mutation
 
-    if (loggedIn) {
-        const token = Auth.getToken();
-        const decodedToken = decode(token);
-        username = decodedToken.username || decodedToken.data?.username || '';
-    } else {
-        navigate('/login'); // Redirect to login page if not logged in
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!searchInput) {
+      return false;
     }
 
-    const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState(username);
-    const [ingredients, setIngredients] = useState([]);
-    const [newIngredient, setNewIngredient] = useState('');
-    const [showIngredientInput, setShowIngredientInput] = useState(false);
-    const [instructions, setInstructions] = useState([]);
-    const [newInstruction, setNewInstruction] = useState('');
-    const [showInstructionInput, setShowInstructionInput] = useState(false);
-    const [image, setImage] = useState(null);
+    try {
+      const response = await searchSpoonacular(searchInput);
 
-    const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
-    };
+      if (!response.ok) {
+        throw new Error("Something went wrong!");
+      }
 
-    const handleAddIngredient = () => {
-        if (newIngredient.trim() !== '') {
-            setIngredients([...ingredients, newIngredient]);
-            setNewIngredient('');
-            setShowIngredientInput(false);
-        }
-    };
+      const { results } = await response.json();
 
-    const handleShowIngredientInput = () => {
-        setShowIngredientInput(true);
-    };
+      const recipeInput = results.map((recipe) => ({
+        recipeId: recipe.id,
+        title: recipe.title || "No Title Available",
+        image: recipe.image,
+      }));
 
-    const handleAddInstruction = () => {
-        if (newInstruction.trim() !== '') {
-            setInstructions([...instructions, newInstruction]);
-            setNewInstruction('');
-            setShowInstructionInput(false);
-        }
-    };
+      setSearchedRecipes(recipeInput);
+      setSearchInput("");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    const handleShowInstructionInput = () => {
-        setShowInstructionInput(true);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            // Call the mutation to save the recipe
-            const { data } = await addRecipe({
-                variables: { 
-                    title, 
-                    author, 
-                    ingredients, 
-                    instructions, 
-                    image 
-                },
-            });
-
-            // Clear the form after submission
-            setTitle('');
-            setIngredients([]);
-            setNewIngredient('');
-            setInstructions([]);
-            setNewInstruction('');
-            setImage(null);
-    
-            // Optionally navigate to a different page or show a success message
-            navigate('/some-route'); // Change this to the route you want to redirect to after saving
-        } catch (error) {
-            console.error("Error adding recipe:", error);
-        }
-    };
-
-    return (
-        <div className="container">
-            <h1 className="title is-3 has-text-centered">Add a New Recipe</h1>
-            <form onSubmit={handleSubmit} className="box">
-                <div className="field">
-                    <label className="label">Title:</label>
-                    <div className="control">
-                        <input 
-                            className="input" 
-                            type="text" 
-                            value={title} 
-                            onChange={(e) => setTitle(e.target.value)} 
-                            required 
-                        />
-                    </div>
-                </div>
-            
-                <div className="field">
-                    <label className="label">Ingredients:</label>
-                    <ul>
-                        {ingredients.map((ingredient, index) => (
-                            <li key={index}>{ingredient}</li>
-                        ))}
-                    </ul>
-                    {!showIngredientInput ? (
-                        <div className="control">
-                            <button 
-                                type="button" 
-                                className="button is-link" 
-                                onClick={handleShowIngredientInput}
-                            >
-                                Add Ingredient
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="field has-addons">
-                            <div className="control is-expanded">
-                                <input 
-                                    className="input" 
-                                    type="text" 
-                                    value={newIngredient} 
-                                    onChange={(e) => setNewIngredient(e.target.value)} 
-                                    placeholder="New Ingredient"
-                                />
-                            </div>
-                            <div className="control">
-                                <button 
-                                    type="button" 
-                                    className="button is-link" 
-                                    onClick={handleAddIngredient}
-                                >
-                                    Save
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                <div className="field">
-                    <label className="label">Instructions:</label>
-                    <ul>
-                        {instructions.map((instruction, index) => (
-                            <li key={index}>Step {index + 1}: {instruction}</li>
-                        ))}
-                    </ul>
-                    {!showInstructionInput ? (
-                        <div className="control">
-                            <button 
-                                type="button" 
-                                className="button is-link" 
-                                onClick={handleShowInstructionInput}
-                            >
-                                Add Instruction
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="field has-addons">
-                            <div className="control is-expanded">
-                                <input 
-                                    className="input" 
-                                    type="text" 
-                                    value={newInstruction} 
-                                    onChange={(e) => setNewInstruction(e.target.value)} 
-                                    placeholder="New Instruction"
-                                />
-                            </div>
-                            <div className="control">
-                                <button 
-                                    type="button" 
-                                    className="button is-link" 
-                                    onClick={handleAddInstruction}
-                                >
-                                    Save
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                <div className="field">
-                    <label className="label">Image:</label>
-                    <div className="control">
-                        <input 
-                            className="input" 
-                            type="file" 
-                            onChange={handleImageChange} 
-                            accept="image/*" 
-                        />
-                    </div>
-                </div>
-
-                <div className="field">
-                    <div className="control">
-                        <button className="button is-primary is-fullwidth" type="submit">Add Recipe</button>
-                    </div>
-                </div>
-                <div className="author-info">
-                    <h2 className="subtitle is-4 has-text-centered">Creator: {author}</h2>
-                </div>
-            </form>
-        </div>
+  const handleSaveRecipe = async (recipeId) => {
+    const recipeToSave = searchedRecipes.find(
+      (recipe) => recipe.recipeId === recipeId
     );
+  
+    if (!recipeToSave) {
+      console.error('Recipe not found for the given recipeId');
+      return;
+    }
+  
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+  
+    if (!token) {
+      return false;
+    }
+  
+    try {
+      const { data } = await saveRecipe({
+        variables: { 
+          recipeData: {
+            title: recipeToSave.title,
+            image: recipeToSave.image,
+            recipeId: recipeToSave.recipeId,
+          }
+        },
+        context: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      });
+  
+      if (data) {
+        setSavedRecipeIds([...savedRecipeIds, recipeToSave.recipeId]);
+      }
+      console.log(recipeToSave.recipeId);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <>
+      <div className="has-background-dark has-text-light p-5">
+        <div className="container">
+          <h1 className="title has-text-light">Search for Recipes!</h1>
+          <form onSubmit={handleFormSubmit}>
+            <div className="columns is-vcentered">
+              <div className="column is-8">
+                <div className="control">
+                  <input
+                    className="input is-large"
+                    name="searchInput"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    type="text"
+                    placeholder="Search for a recipe"
+                  />
+                </div>
+              </div>
+              <div className="column is-4">
+                <button
+                  type="submit"
+                  className="button is-success is-large is-fullwidth"
+                >
+                  Submit Search
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div className="container">
+        <h2 className="title pt-5">
+          {searchedRecipes.length
+            ? `Viewing ${searchedRecipes.length} results:`
+            : "Search for a recipe to begin"}
+        </h2>
+        <div className="columns is-multiline">
+          {searchedRecipes.map((recipe) => {
+            return (
+              <div className="column is-one-third" key={recipe.recipeId}>
+                <div className="card">
+                  {recipe.image ? (
+                    <div className="card-image">
+                      <figure className="image is-4by3">
+                        <img
+                          src={recipe.image}
+                          alt={`The cover for ${recipe.title}`}
+                        />
+                      </figure>
+                    </div>
+                  ) : null}
+                  <div className="card-content">
+                    <p className="title">{recipe.title}</p>
+                    <p className="subtitle is-6"></p>
+                    {Auth.loggedIn() && (
+                      <button
+                        disabled={savedRecipeIds?.some(
+                          (savedRecipeId) => savedRecipeId === recipe.recipeId
+                        )}
+                        className="button is-info is-fullwidth"
+                        onClick={() => handleSaveRecipe(recipe.recipeId)}
+                      >
+                        {savedRecipeIds?.some(
+                          (savedRecipeId) => savedRecipeId === recipe.recipeId
+                        )
+                          ? "This recipe has already been saved!"
+                          : "Save this Recipe!"}
+                      </button>
+                    )}
+                    <Link
+                      to={`/recipe/${recipe.recipeId}`} // Use Link to pass the recipeId
+                      className="button is-primary is-fullwidth mt-3"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
 };
 
-export default AddRecipe;
+export default SearchRecipes;

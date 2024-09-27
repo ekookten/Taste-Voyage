@@ -7,7 +7,7 @@ import decode from 'jwt-decode';
 
 const AddRecipe = () => {
     const navigate = useNavigate();
-    const [addRecipe] = useMutation(ADD_RECIPE);
+    const [addSecretRecipe] = useMutation(ADD_RECIPE);
     const [addIngredient] = useMutation(ADD_INGREDIENT);
     const [addInstruction] = useMutation(ADD_INSTRUCTION); // Mutation for adding instructions
 
@@ -125,7 +125,7 @@ const AddRecipe = () => {
         }
     
         try {
-            const recipeData = {
+            const secretRecipeData = {
                 title,
                 author,
                 ingredients: ingredients.map((ingredient) => ({
@@ -141,8 +141,8 @@ const AddRecipe = () => {
                 recipeId: Math.floor(Math.random() * 1000), 
             };
     
-            const { data } = await addRecipe({
-                variables: { recipeData },
+            const { data } = await addSecretRecipe({
+                variables: { secretRecipeData },
             });
     
             // Clear the form after submission

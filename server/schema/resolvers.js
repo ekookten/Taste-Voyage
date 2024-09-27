@@ -1,4 +1,4 @@
-const { User, Recipe, Ingredient, Instruction } = require("../models");
+const { User, Recipe, Ingredient, Instruction, SecretRecipe } = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
@@ -40,7 +40,7 @@ const resolvers = {
     
         const updatedUser = await User.findByIdAndUpdate(
           context.user._id,
-          { $addToSet: { savedRecipes: recipe._id, recipeId: recipeId } },
+          { $addToSet: { savedRecipes: recipe._id, recipeData } },
           { new: true, runValidators: true }
         ).populate("savedRecipes");
     
@@ -86,14 +86,14 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    addRecipe: async (parent, { recipeData }, context) => {
+    addSecretRecipe: async (parent, { secretRecipeData }, context) => {
       if (!context.user) {
           throw new AuthenticationError("Authentication required");
       }
   
       // Ensure each ingredient has the right properties
       const ingredients = await Promise.all(
-          recipeData.ingredients.map(async (ingredient) => {
+          secretRecipeData.ingredients.map(async (ingredient) => {
               const { name, unit, quantity } = ingredient;
               // Create the ingredient with the correct structure
               return await Ingredient.create({ name, unit, quantity });
@@ -102,20 +102,20 @@ const resolvers = {
   
       // Process instructions
       const instructions = await Promise.all(
-          recipeData.instructions.map(async (instruction) => {
+        secretRecipeData.instructions.map(async (instruction) => {
               const newInstruction = await Instruction.create(instruction);
               return newInstruction._id;
           })
       );
   
       // Create the recipe
-      const recipe = await Recipe.create({
-          title: recipeData.title,
+      const recipe = await SecretRecipe.create({
+          title: secretRecipeData.title,
           author: context.user.username,
           ingredients,
           instructions,
-          image: recipeData.image,
-          recipeId: recipeData.recipeId
+          image: secretRecipeData.image,
+          recipeId: secretRecipeData.recipeId
       });
   
       // Update the user's savedRecipes
@@ -126,7 +126,7 @@ const resolvers = {
       );
   
       // Fetch the full recipe including populated ingredients and instructions
-      const fullRecipe = await Recipe.findById(recipe._id)
+      const fullRecipe = await SecretRecipe.findById(recipe._id)
           .populate("ingredients")
           .populate("instructions");
   
