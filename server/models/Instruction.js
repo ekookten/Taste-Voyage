@@ -3,7 +3,7 @@ const { Schema, model } = require('mongoose');
 
 const InstructionSchema = new Schema({
   step: {
-    type: Number,
+    type: String,
     required: true,
   },
   text: {

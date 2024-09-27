@@ -8,12 +8,12 @@ const typeDefs = `
 
   type Recipe {
     _id: ID
-    username: String
-    savedRecipes: [Recipe]
     title: String
-    image: String   
+    author: String
+    ingredients: [Ingredient]
+    instructions: [Instruction]
+    image: String
     recipeId: Int
-    
   }
 
   type Comment {
@@ -37,42 +37,45 @@ const typeDefs = `
 
   type Ingredient {
     _id: ID!
-   name: String!
-   unit: String
-   quantity: String!
+    name: String!
+    unit: String!
+     quantity: Float!
   }
+
   type Instruction {
     _id: ID!
     text: String!
     step: Int!
   }
 
-input recipeInput {
-  title: String!
-  image: String
-  recipeId: Int!
-  
-
+ input recipeInput {
+    title: String!
+    author: String!
+    ingredients: [IngredientInput!]! 
+    instructions: [InstructionInput!]!   
+    image: String 
+    recipeId: Int!              
 }
 
-input IngredientInput {
-name: String!
-unit: String!
-quantity: Int!
-}
+  input IngredientInput {
+    name: String!
+    unit: String!
+    quantity: String!
+  }
 
-input InstructionInput {
-step: Int!
-text: String!
-}
+  input InstructionInput {
+    step: String!
+    text: String!
+  }
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    saveRecipe(recipeData : recipeInput!): Recipe
+    saveRecipe(recipeData: recipeInput!): Recipe
     addRecipe(recipeData: recipeInput!): Recipe
-
     addComment(recipeId: ID!, commentText: String!): Recipe
+    addIngredient(name: String!, unit: String!, quantity: Float!): Ingredient
+    addInstruction(text: String!, step: String!): Instruction
     removeRecipe(recipeId: ID!): Recipe
     removeComment(recipeId: ID!, commentId: ID!): Recipe
   }

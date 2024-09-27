@@ -5,7 +5,6 @@ import { REMOVE_RECIPE } from "../utils/mutations";
 import Auth from "../utils/auth";
 import { Link } from "react-router-dom"; // Import Link for navigation
 
-
 const Profile = () => {
   const { data, loading, error } = useQuery(GET_ME, {
     context: {
@@ -63,6 +62,11 @@ const Profile = () => {
             <button onClick={(e) => { e.stopPropagation(); handleDeleteRecipe(recipe._id); }}>Remove This Recipe</button>
           </div>
         ))}
+      </div>
+
+      {/* Add Recipe Button */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <Link to="/add-recipe" className="button is-success">Create Your Secret Recipe</Link>
       </div>
     </div>
   );

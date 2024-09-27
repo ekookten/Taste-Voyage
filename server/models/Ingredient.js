@@ -7,10 +7,11 @@ const IngredientSchema = new Schema({
   },
   unit: {
     type: String,
+    required: true,
     default: 'N/A',
   },
   quantity: {
-    type: Number,
+    type: String,
     required: true,
   },
 });

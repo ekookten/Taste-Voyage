@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom';
-import Signup from '../../pages/Signup'; 
-import Login from '../../pages/Login';
 import Auth from '../../utils/auth'; 
 import decode from 'jwt-decode';
-import { GET_ME } from '../../utils/queries';   
+   
 
 const AppNavbar = () => {
   const loggedIn = Auth.loggedIn();
