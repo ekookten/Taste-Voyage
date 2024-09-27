@@ -40,7 +40,7 @@ const resolvers = {
     
         const updatedUser = await User.findByIdAndUpdate(
           context.user._id,
-          { $addToSet: { savedRecipes: recipe._id } },
+          { $addToSet: { savedRecipes: recipe._id, recipeId: recipeId } },
           { new: true, runValidators: true }
         ).populate("savedRecipes");
     
