@@ -31,7 +31,7 @@ const router = createBrowserRouter([
         path: '/search',
         element: <SearchRecipe />
       }, {
-        path: '/profiles/:username',
+        path: '/me',
         element: <Profile />
       }, {
         path: '/me',

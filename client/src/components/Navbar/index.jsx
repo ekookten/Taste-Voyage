@@ -38,7 +38,7 @@ const AppNavbar = () => {
               <Link to='/search' className="button is-light">Search for Recipes</Link>
               {loggedIn ? (
                 <>
-                  <Link to={`/profiles/${username}`} className="button is-light">My Profile</Link>
+                  <Link to={`/me`} className="button is-light">My Profile</Link>
                     <button onClick={() => Auth.logout()} className="button is-light ml-2">Logout</button>
                   <span className="navbar-item">Welcome,<strong className='has-text-light'>{username.toUpperCase()}</strong></span>
                 </>
