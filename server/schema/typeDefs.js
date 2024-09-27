@@ -12,6 +12,8 @@ const typeDefs = `
     savedRecipes: [Recipe]
     title: String
     image: String   
+    recipeId: Int
+    
   }
 
   type Comment {

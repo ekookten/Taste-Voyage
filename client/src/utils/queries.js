@@ -9,7 +9,7 @@ export const GET_ME = gql`
         _id
         title
         image
-        
+        recipeId
       }
     }
   }
@@ -21,7 +21,6 @@ export const GET_RECIPE = gql`
           _id
           title
           image
-          recipeId
         }
     }
     `;

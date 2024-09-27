@@ -9,6 +9,10 @@ const recipeSchema = new Schema({
   image: {
     type: String,
   },
+    recipeId: {
+    type: Number,
+    required: true,
+    },
   link: {
     type: String,
   },
