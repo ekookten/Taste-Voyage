@@ -8,6 +8,7 @@ const recipeSchema = new Schema({
   ],
   image: {
     type: String,
+    required: false
   },
     recipeId: {
     type: Number,

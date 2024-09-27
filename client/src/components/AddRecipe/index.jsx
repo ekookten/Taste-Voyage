@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client'; // Import useMutation from Apollo Client
-import { ADD_RECIPE } from '../utils/mutations'; // Import your ADD_RECIPE mutation
-import Auth from '../utils/auth'; // Import the Auth utility
+import { useMutation } from '@apollo/client';
+import { ADD_RECIPE, ADD_INGREDIENT, ADD_INSTRUCTION } from '../../utils/mutations'; // Import the ADD_INSTRUCTION mutation
+import Auth from '../../utils/auth';
 import decode from 'jwt-decode';
 
 const AddRecipe = () => {
-    const navigate = useNavigate(); // Initialize navigate for redirection
-    const [addRecipe] = useMutation(ADD_RECIPE); // Use the ADD_RECIPE mutation
+    const navigate = useNavigate();
+    const [addRecipe] = useMutation(ADD_RECIPE);
+    const [addIngredient] = useMutation(ADD_INGREDIENT);
+    const [addInstruction] = useMutation(ADD_INSTRUCTION); // Mutation for adding instructions
 
-    // Check if user is logged in and get username
     const loggedIn = Auth.loggedIn();
     let username = '';
 
@@ -18,13 +19,15 @@ const AddRecipe = () => {
         const decodedToken = decode(token);
         username = decodedToken.username || decodedToken.data?.username || '';
     } else {
-        navigate('/login'); // Redirect to login page if not logged in
+        navigate('/login');
     }
 
     const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState(username);
+    const [author] = useState(username);
     const [ingredients, setIngredients] = useState([]);
-    const [newIngredient, setNewIngredient] = useState('');
+    const [newIngredientName, setNewIngredientName] = useState('');
+    const [newIngredientUnit, setNewIngredientUnit] = useState('');
+    const [newIngredientQuantity, setNewIngredientQuantity] = useState('');
     const [showIngredientInput, setShowIngredientInput] = useState(false);
     const [instructions, setInstructions] = useState([]);
     const [newInstruction, setNewInstruction] = useState('');
@@ -32,14 +35,51 @@ const AddRecipe = () => {
     const [image, setImage] = useState(null);
 
     const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
-    const handleAddIngredient = () => {
-        if (newIngredient.trim() !== '') {
-            setIngredients([...ingredients, newIngredient]);
-            setNewIngredient('');
-            setShowIngredientInput(false);
+    const handleAddIngredient = async () => {
+        if (
+            newIngredientName.trim() !== '' &&
+            newIngredientUnit.trim() !== '' &&
+            newIngredientQuantity.trim() !== ''
+        ) {
+            console.log('Adding Ingredient:', {
+                name: newIngredientName,
+                unit: newIngredientUnit,
+                quantity: parseFloat(newIngredientQuantity),
+            });
+
+            try {
+                const { data } = await addIngredient({ 
+                    variables: { 
+                        name: newIngredientName.trim(), 
+                        unit: newIngredientUnit.trim(), 
+                        quantity: parseFloat(newIngredientQuantity.trim()) 
+                    } 
+                });
+
+                if (data && data.addIngredient) {
+                    setIngredients([...ingredients, data.addIngredient]);
+                } else {
+                    console.error("Unexpected response:", data);
+                }
+
+                // Reset input fields
+                setNewIngredientName('');
+                setNewIngredientUnit('');
+                setNewIngredientQuantity('');
+                setShowIngredientInput(false);
+            } catch (error) {
+                console.error("Error adding ingredient:", error);
+            }
         }
     };
 
@@ -47,11 +87,28 @@ const AddRecipe = () => {
         setShowIngredientInput(true);
     };
 
-    const handleAddInstruction = () => {
+    const handleAddInstruction = async () => {
         if (newInstruction.trim() !== '') {
-            setInstructions([...instructions, newInstruction]);
-            setNewInstruction('');
-            setShowInstructionInput(false);
+            const stepNumber = instructions.length + 1; 
+            try {
+                const { data } = await addInstruction({
+                    variables: {
+                        text: newInstruction.trim(),
+                        step: stepNumber.toString(),
+                    },
+                });
+                
+                if (data && data.addInstruction) {
+                    setInstructions([...instructions, data.addInstruction]);
+                } else {
+                    console.error("Unexpected response:", data);
+                }
+
+                setNewInstruction('');
+                setShowInstructionInput(false);
+            } catch (error) {
+                console.error("Error adding instruction:", error);
+            }
         }
     };
 
@@ -61,29 +118,45 @@ const AddRecipe = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
+        if (ingredients.length === 0) {
+            alert("Please add at least one ingredient.");
+            return;
+        }
+    
         try {
-            // Call the mutation to save the recipe
+            const recipeData = {
+                title,
+                author,
+                ingredients: ingredients.map((ingredient) => ({
+                    name: ingredient.name,  // Assuming this is a string
+                    unit: ingredient.unit,   // Assuming this is a string
+                    quantity: ingredient.quantity.toString(), // Convert quantity to string
+                })),
+                instructions: instructions.map((instruction) => ({
+                    step: instruction.step.toString(), // Convert step to string if necessary
+                    text: instruction.text, // Assuming this is a string
+                })),
+                image,
+                recipeId: Math.floor(Math.random() * 1000), 
+            };
+    
             const { data } = await addRecipe({
-                variables: { 
-                    title, 
-                    author, 
-                    ingredients, 
-                    instructions, 
-                    image 
-                },
+                variables: { recipeData },
             });
-
+    
             // Clear the form after submission
             setTitle('');
             setIngredients([]);
-            setNewIngredient('');
+            setNewIngredientName('');
+            setNewIngredientUnit('');
+            setNewIngredientQuantity('');
             setInstructions([]);
             setNewInstruction('');
             setImage(null);
     
-            // Optionally navigate to a different page or show a success message
-            navigate('/some-route'); // Change this to the route you want to redirect to after saving
+            alert("Your Secret Recipe has been added!");
+            navigate('/me');
         } catch (error) {
             console.error("Error adding recipe:", error);
         }
@@ -105,12 +178,12 @@ const AddRecipe = () => {
                         />
                     </div>
                 </div>
-            
+
                 <div className="field">
                     <label className="label">Ingredients:</label>
                     <ul>
                         {ingredients.map((ingredient, index) => (
-                            <li key={index}>{ingredient}</li>
+                            <li key={index}>{ingredient.name}, {ingredient.unit}, {ingredient.quantity}</li>
                         ))}
                     </ul>
                     {!showIngredientInput ? (
@@ -129,9 +202,28 @@ const AddRecipe = () => {
                                 <input 
                                     className="input" 
                                     type="text" 
-                                    value={newIngredient} 
-                                    onChange={(e) => setNewIngredient(e.target.value)} 
-                                    placeholder="New Ingredient"
+                                    value={newIngredientName} 
+                                    onChange={(e) => setNewIngredientName(e.target.value)} 
+                                    placeholder="Name"
+                                />
+                            </div>
+
+                            <div className="control is-expanded">
+                                <input 
+                                    className="input" 
+                                    type="text" 
+                                    value={newIngredientQuantity} 
+                                    onChange={(e) => setNewIngredientQuantity(e.target.value)} 
+                                    placeholder="Quantity"
+                                />
+                            </div>
+                            <div className="control is-expanded">
+                                <input 
+                                    className="input" 
+                                    type="text" 
+                                    value={newIngredientUnit} 
+                                    onChange={(e) => setNewIngredientUnit(e.target.value)} 
+                                    placeholder="Unit"
                                 />
                             </div>
                             <div className="control">
@@ -151,7 +243,7 @@ const AddRecipe = () => {
                     <label className="label">Instructions:</label>
                     <ul>
                         {instructions.map((instruction, index) => (
-                            <li key={index}>Step {index + 1}: {instruction}</li>
+                            <li key={index}>Step {instruction.step}: {instruction.text}</li>
                         ))}
                     </ul>
                     {!showInstructionInput ? (

@@ -10,6 +10,7 @@ import SingleRecipe from './pages/SingleRecipe';
 import Profile from './pages/Profile';
 import Error from './pages/Error';
 import SearchRecipe from './pages/SearchRecipe.jsx';
+import AddRecipe from './components/AddRecipe';
 
 const router = createBrowserRouter([
   {
@@ -30,13 +31,16 @@ const router = createBrowserRouter([
       {
         path: '/search',
         element: <SearchRecipe />
-      }, {
+      }, 
+      {
+        path: 'add-recipe',
+        element: <AddRecipe />
+      },
+      {
         path: '/me',
         element: <Profile />
-      }, {
-        path: '/me',
-        element: <Profile />
-      }, {
+      },
+      {
         path: '/recipe/:recipeId',
         element: <SingleRecipe />
       }
