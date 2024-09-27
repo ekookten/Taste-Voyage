@@ -138,7 +138,7 @@ const resolvers = {
 
         await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedRecipes: recipe._id } }
+          { $pull: { savedRecipes: recipeId} }
         );
 
         return recipe;
