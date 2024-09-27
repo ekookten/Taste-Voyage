@@ -17,30 +17,14 @@ export const SAVE_RECIPE = gql`
 
 // Mutation to remove a recipe from the saved list
 export const REMOVE_RECIPE = gql`
-  mutation removeRecipe($recipeId: String!) {
+  mutation removeRecipe($recipeId: ID!) {
     removeRecipe(recipeId: $recipeId) {
       _id
       username
       savedRecipes {
-        _id
-        summary
+      _id
         title
-        authors
         image
-        comment {
-          commentText
-          commentAuthor
-          createdAt
-        }
-        instructions {
-          text
-          step
-        }
-        ingredients {
-          name
-          unit
-          quantity
-        }
       }
     }
   }

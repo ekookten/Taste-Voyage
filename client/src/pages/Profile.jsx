@@ -1,38 +1,57 @@
-import React from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_ME } from '../utils/queries';
-import { REMOVE_RECIPE } from '../utils/mutations';
-import Auth from '../utils/auth';
+import React, { useState, useEffect } from "react";
+import { useQuery, useMutation } from "@apollo/client";
+import { GET_ME } from "../utils/queries";
+import { REMOVE_RECIPE } from "../utils/mutations";
+import Auth from "../utils/auth";
 
 const Profile = () => {
-    const { loading, data } = useQuery(GET_ME);
-    const [removeRecipe] = useMutation(REMOVE_RECIPE);
+  // Fetch user data with saved recipes
+  const { data, loading, error } = useQuery(GET_ME, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${Auth.getToken()}`,
+      },
+    },
+  });
+  const [removeRecipe] = useMutation(REMOVE_RECIPE);
 
-    const userData = data?.me || {};
+  // Initialize state for managing saved recipes
+  const [savedRecipes, setSavedRecipes] = useState([]);
 
-    const handleDeleteRecipe = async (recipeId) => {
-        try {
-            await removeRecipe({
-                variables: { recipeId },
-                update: (cache, { data: { removeRecipe } }) => {
-                    const { me } = cache.readQuery({ query: GET_ME });
-                    cache.writeQuery({
-                        query: GET_ME,
-                        data: { me: { ...me, savedRecipes: removeRecipe.savedRecipes } },
-                        
-                    });
-                    console.log(userData.savedRecipes);
-                },
-            });
-            console.log('Recipe removed successfully');
-        } catch (err) {
-            console.error(err);
-        }
-    };
+  // Extract user data
+  const userData = data?.me || {};
 
-    if (loading) {
-        return <div>Loading...</div>;
+  // Update the state when data is loaded
+  useEffect(() => {
+    if (userData?.savedRecipes) {
+      setSavedRecipes(userData.savedRecipes);
     }
+  }, [userData]);
+
+  // Function to handle recipe removal
+  const handleDeleteRecipe = async (recipeId) => {
+    try {
+      // Call the removeRecipe mutation
+      await removeRecipe({
+        variables: { recipeId },
+        refetchQueries: [{ query: GET_ME }]
+      });
+
+      // Update the state after deletion
+      setSavedRecipes((prevRecipes) =>
+        prevRecipes.filter((recipe) => recipe._id !== recipeId)
+      
+      );
+
+      console.log("Recipe removed successfully");
+    } catch (err) {
+      console.error("Error removing recipe:", err);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
     
     return (
         <div>
@@ -44,7 +63,7 @@ const Profile = () => {
                         <h3>{recipe.title}</h3>
                         {/* <p>{recipe.ingredients.join(', ')}</p> */}
                         {recipe.description && <p>{recipe.description}</p>}
-                        <button onClick={() => handleDeleteRecipe(recipe.recipeId)}>Remove This Recipe</button>
+                        <button onClick={() => handleDeleteRecipe(recipe._id)}>Remove This Recipe</button>
                     </div>
                 ))}
             </div>
