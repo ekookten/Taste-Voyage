@@ -1,33 +1,16 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 // Mutation to save a recipe for the logged-in user
 export const SAVE_RECIPE = gql`
-  mutation saveRecipe($recipeData: RecipeInput!) {
+  mutation saveRecipe($recipeData: recipeInput!) {
     saveRecipe(recipeData: $recipeData) {
       _id
       username
       savedRecipes {
         _id
-        summary
         title
-        authors
         image
-        comment {
-          commentText
-          commentAuthor
-          createdAt
-        }
-        instructions {
-          text
-          step
-        }
-        ingredients {
-          name
-          unit
-          quantity
-        }
-        
-    }
+      }
     }
   }
 `;
@@ -58,8 +41,7 @@ export const REMOVE_RECIPE = gql`
           unit
           quantity
         }
-        
-    }
+      }
     }
   }
 `;

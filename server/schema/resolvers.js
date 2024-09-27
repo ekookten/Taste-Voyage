@@ -1,4 +1,4 @@
-const { User, Recipe , Ingredient, Instruction} = require("../models");
+const { User, Recipe, Ingredient, Instruction } = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
@@ -28,6 +28,17 @@ const resolvers = {
   },
 
   Mutation: {
+    saveRecipe: async (parent, { recipeId }, context) => {
+      if (context.user) {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $addToSet: { savedRecipes: recipeId } },
+          { new: true }
+        ).populate("savedRecipes");
+        return updatedUser;
+      }
+    },
+
     addUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
@@ -70,12 +81,12 @@ const resolvers = {
       try {
         // Check if the user is authenticated
         if (!context.user) {
-          throw new Error('Authentication required');
+          throw new Error("Authentication required");
         }
-    
+
         // Add the userId to the recipe input
-        args.recipeInput.user = context.user._id; 
-    
+        args.recipeInput.user = context.user._id;
+
         // Process ingredients
         args.recipeInput.ingredients = await Promise.all(
           args.recipeInput.ingredients.map(async (ingredient) => {
@@ -83,7 +94,7 @@ const resolvers = {
             return newIngredient._id;
           })
         );
-    
+
         // Process instructions
         args.recipeInput.instructions = await Promise.all(
           args.recipeInput.instructions.map(async (instruction) => {
@@ -91,24 +102,24 @@ const resolvers = {
             return newInstruction._id;
           })
         );
-    
+
         // Create the recipe
         const recipe = await Recipe.create({
           ...args.recipeInput,
         });
-    
+
         // Fetch the full recipe including the populated ingredients
         const fullRecipe = await Recipe.findById(recipe._id)
-          .populate('ingredients')
-          .populate('instructions');
-    
+          .populate("ingredients")
+          .populate("instructions");
+
         return fullRecipe; // Return the full recipe with populated ingredients
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
         throw new Error(error.message);
       }
     },
-    
+
     removeRecipe: async (parent, { recipeId }, context) => {
       if (context.user) {
         const recipe = await Recipe.findOneAndDelete({
