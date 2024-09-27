@@ -6,11 +6,17 @@ import Auth from "../utils/auth";
 
 const Profile = () => {
   // Fetch user data with saved recipes
-  const { data, loading, error } = useQuery(GET_ME, {
+  const { data, loading, error, } = useQuery(GET_ME, {
     context: {
       headers: {
         Authorization: `Bearer ${Auth.getToken()}`,
       },
+    },
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      if (data?.me?.savedRecipes) {
+        setSavedRecipes(data.me.savedRecipes);
+      }
     },
   });
   const [removeRecipe] = useMutation(REMOVE_RECIPE);
