@@ -2,23 +2,23 @@ import React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { Outlet } from 'react-router-dom';
-import { useState } from 'react';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Auth from './utils/auth';
 
 const App = () => {
-  // Apollo Client setup with HTTP Link
   const httpLink = createHttpLink({
-    uri:'http://localhost:4000/graphql',
+    uri: 'http://localhost:4000/graphql',  // Use environment variable for deployment
   });
 
-  // Adding API key to headers
+  // Add JWT token to headers if user is logged in
   const authLink = setContext((_, { headers }) => {
+    const token = Auth.getToken();
     return {
       headers: {
         ...headers,
-        authorization: `e675da75cbd340718699bc2539228d08`,
+        authorization: token ? `Bearer ${token}` : '',  // Correct token format
       },
     };
   });

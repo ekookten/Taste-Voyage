@@ -3,17 +3,17 @@ import { Link } from 'react-router-dom';
 import 'bulma/css/bulma.min.css'; // Import Bulma CSS
 
 function Home() {
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [recipes, setRecipes] = useState([]);
+  // // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch('/api/recipes')
-      .then(res => res.json())
-      .then(data => {
-        setRecipes(data);
-        setLoading(false);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch('/api/recipes')
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       setRecipes(data);
+  //       // setLoading(false);
+  //     });
+  // }, []);
 
   return (
     <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '2rem' }}> {/* White background with padding */}
