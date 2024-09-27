@@ -8,13 +8,10 @@ const typeDefs = `
 
   type Recipe {
     _id: ID
-    summary: String
-    authors: [String]
+    username: String
+    savedRecipes: [Recipe]
     title: String
-    image: String
-    comment: [Comment]
-    instructions: [Instruction]
-    ingredients: [Ingredient]
+    image: String   
   }
 
   type Comment {
@@ -50,12 +47,9 @@ const typeDefs = `
 
 input recipeInput {
   title: String!
-  summary: String!
-  authors: [String]
-  ingredients: [IngredientInput]
-  instructions: [InstructionInput]
   image: String
-  link: String
+  recipeId: Int!
+  
 
 }
 
@@ -73,7 +67,8 @@ text: String!
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    addRecipe(recipeInput: recipeInput!): Recipe
+    saveRecipe(recipeData : recipeInput!): Recipe
+    addRecipe(recipeData: recipeInput!): Recipe
 
     addComment(recipeId: ID!, commentText: String!): Recipe
     removeRecipe(recipeId: ID!): Recipe
@@ -82,4 +77,3 @@ text: String!
 `;
 
 module.exports = typeDefs;
-

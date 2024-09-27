@@ -60,7 +60,7 @@ const SearchRecipes = (props) => {
 
     try {
       const { data } = await saveRecipe({
-        variables: { recipe: recipeToSave }, // Send the full recipe object here
+        variables: { recipeData: recipeToSave }, // Send the full recipe object here
         context: {
           headers: {
             Authorization: `Bearer ${token}`,
