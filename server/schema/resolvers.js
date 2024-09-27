@@ -28,13 +28,22 @@ const resolvers = {
   },
 
   Mutation: {
-    saveRecipe: async (parent, { recipeId }, context) => {
+    saveRecipe: async (parent, { recipeData }, context) => {
       if (context.user) {
-        const updatedUser = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $addToSet: { savedRecipes: recipeId } },
-          { new: true }
+        const { recipeId, title, image } = recipeData;
+    
+        let recipe = await Recipe.findOne({ recipeId });
+    
+        if (!recipe) {
+          recipe = await Recipe.create({ recipeId, title, image }); // No summary field here
+        }
+    
+        const updatedUser = await User.findByIdAndUpdate(
+          context.user._id,
+          { $addToSet: { savedRecipes: recipe._id } },
+          { new: true, runValidators: true }
         ).populate("savedRecipes");
+    
         return updatedUser;
       }
     },

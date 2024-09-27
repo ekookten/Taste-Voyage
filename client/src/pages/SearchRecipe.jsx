@@ -3,18 +3,12 @@ import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client"; // Import Apollo Client's useMutation
 import { SAVE_RECIPE } from "../utils/mutations"; // Import the SAVE_RECIPE mutation
 import Auth from "../utils/auth";
-import { saveRecipeIds, getSavedRecipeIds } from "../utils/localStorage";
 import { searchSpoonacular } from "../utils/API";
 
 const SearchRecipes = (props) => {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [savedRecipeIds, setSavedRecipeIds] = useState(getSavedRecipeIds());
-
-  // Save recipe IDs to localStorage whenever savedRecipeIds state changes
-  useEffect(() => {
-    saveRecipeIds(savedRecipeIds);
-  }, [savedRecipeIds]);
+  const [savedRecipeIds, setSavedRecipeIds] = useState([]);
 
   const [saveRecipe] = useMutation(SAVE_RECIPE); // Use the SAVE_RECIPE mutation
 
@@ -32,7 +26,7 @@ const SearchRecipes = (props) => {
         throw new Error("Something went wrong!");
       }
 
-      const {results} = await response.json();
+      const { results } = await response.json();
 
       const recipeInput = results.map((recipe) => ({
         recipeId: recipe.id,
@@ -51,23 +45,34 @@ const SearchRecipes = (props) => {
     const recipeToSave = searchedRecipes.find(
       (recipe) => recipe.recipeId === recipeId
     );
-    console.log(recipeToSave);
+  
+    if (!recipeToSave) {
+      console.error('Recipe not found for the given recipeId');
+      return;
+    }
+  
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+  
     if (!token) {
       return false;
     }
-
+  
     try {
       const { data } = await saveRecipe({
-        variables: { recipeData: recipeToSave }, // Send the full recipe object here
+        variables: { 
+          recipeData: {
+            title: recipeToSave.title,
+            image: recipeToSave.image,
+            recipeId: recipeToSave.recipeId,
+          }
+        },
         context: {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         },
       });
-
+  
       if (data) {
         setSavedRecipeIds([...savedRecipeIds, recipeToSave.recipeId]);
       }
@@ -131,8 +136,7 @@ const SearchRecipes = (props) => {
                   ) : null}
                   <div className="card-content">
                     <p className="title">{recipe.title}</p>
-                    <p className="subtitle is-6">
-                    </p>
+                    <p className="subtitle is-6"></p>
                     {Auth.loggedIn() && (
                       <button
                         disabled={savedRecipeIds?.some(
@@ -147,12 +151,13 @@ const SearchRecipes = (props) => {
                           ? "This recipe has already been saved!"
                           : "Save this Recipe!"}
                       </button>
-                      
                     )}
-                     <Link 
-                    to={`/recipe/${recipe.recipeId}`} // Use Link to pass the recipeId
-                    className="button is-primary is-fullwidth mt-3"
-                  >View Details</Link>
+                    <Link
+                      to={`/recipe/${recipe.recipeId}`} // Use Link to pass the recipeId
+                      className="button is-primary is-fullwidth mt-3"
+                    >
+                      View Details
+                    </Link>
                   </div>
                 </div>
               </div>
