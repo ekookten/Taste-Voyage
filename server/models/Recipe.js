@@ -14,9 +14,6 @@ const recipeSchema = new Schema({
     type: Number,
     required: true,
     },
-  link: {
-    type: String,
-  },
   title: {
     type: String,
     required: true,
@@ -32,26 +29,7 @@ const recipeSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Instruction',
     },
-  ],
-  comments: [
-    {
-      commentText: {
-        type: String,
-        required: true,
-        minlength: 1,
-        maxlength: 280,
-      },
-      commentAuthor: {
-        type: String,
-        required: true,
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-        get: (timestamp) => dateFormat(timestamp),
-      },
-    },
-  ],
+  ]
 });
 
 const Recipe = model('Recipe', recipeSchema);

@@ -3,8 +3,8 @@ import { gql , useMutation} from "@apollo/client";
 
 
 export const ADD_RECIPE = gql`
-    mutation AddRecipe($recipeData: recipeInput!) {
-        addRecipe(recipeData: $recipeData) { 
+    mutation addSecretRecipe($secretRecipeData: secretRecipeInput!) {
+        addSecretRecipe(secretRecipeData: $secretRecipeData) { 
             _id
             title
             author
