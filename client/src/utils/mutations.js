@@ -3,23 +3,24 @@ import { gql , useMutation} from "@apollo/client";
 
 
 export const ADD_SECRET_RECIPE = gql`
-    mutation addSecretRecipe($secretRecipeData: secretRecipeInput!) {
-        addSecretRecipe(secretRecipeData: $secretRecipeData) { 
-            _id
-            title
-               username
-                recipeId
-            ingredients{
-                name
-                unit
-                quantity
-            } 
-            instructions{
-                text
-                step
-            }
-        }
+mutation addSecretRecipe($secretRecipeData: secretRecipeInput!) {
+  addSecretRecipe(secretRecipeData: $secretRecipeData) { 
+    _id
+    title
+    username
+    ingredients {
+      _id
+      name
+      unit
+      quantity
+    } 
+    instructions {
+      _id
+      text
+      step
     }
+  }
+}
 `;
 export const REMOVE_SECRET_RECIPE = gql`
   mutation removeSecretRecipe($recipeId: ID!) {
@@ -39,7 +40,7 @@ export const REMOVE_SECRET_RECIPE = gql`
                 unit
                 quantity
             }
-            recipeId
+      
       }
     }
   }

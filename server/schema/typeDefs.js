@@ -25,7 +25,6 @@ const typeDefs = `
     ingredients: [Ingredient]
     instructions: [Instruction]
     image: String
-    recipeId: Int
   }
 
   type Comment {
@@ -71,7 +70,7 @@ const typeDefs = `
     ingredients: [IngredientInput!]! 
     instructions: [InstructionInput!]!   
     image: String 
-    recipeId: Int!              
+                  
 }
 
   input IngredientInput {

@@ -16,7 +16,6 @@ export const GET_ME = gql`
         title
         username
         image
-        recipeId
         ingredients {
           _id
           
@@ -33,7 +32,6 @@ export const GET_SECRET_RECIPE = gql`
   query getSecretRecipe($recipeId: ID!) {
     getSecretRecipe(recipeId: $recipeId) {
       _id
-      recipeId
       title
       image
       ingredients {

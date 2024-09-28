@@ -13,13 +13,16 @@ const resolvers = {
       return Recipe.find(params).sort({ createdAt: -1 });
     },
     getSecretRecipe: async (parent, { recipeId }, context) => {
-  if (!Types.ObjectId.isValid(recipeId)) {
-    throw new Error("Invalid recipe ID");
-  }
-
-  // Fetch the recipe from your database using ObjectId
-  return await SecretRecipe.findById(Types.ObjectId(recipeId));
-},
+      const recipe = await SecretRecipe.findById(recipeId)
+        .populate("ingredients") // Populates the ingredient details
+        .populate("instructions"); // Populates the instruction details
+    
+      if (!recipe) {
+        throw new Error("Recipe not found");
+      }
+    
+      return recipe;
+    },
     recipe: async (parent, { recipeId }) => {
       // Changed from 'thought' to 'recipe'
       return Recipe.findOne({ _id: recipeId })
@@ -100,48 +103,65 @@ const resolvers = {
           throw new AuthenticationError("Authentication required");
       }
   
-      // Create each ingredient and store its ID
-      const ingredientIds = await Promise.all(
-          secretRecipeData.ingredients.map(async (ingredient) => {
-              const { name, unit, quantity } = ingredient;
-              const newIngredient = await Ingredient.create({ name, unit, quantity });
-              return newIngredient._id;
-          })
-      );
+      try {
+          // Validate secretRecipeData
+          if (!secretRecipeData.title || !secretRecipeData.ingredients || !secretRecipeData.instructions) {
+              throw new Error("Title, ingredients, and instructions are required.");
+          }
   
-      // Create each instruction and store its ID
-      const instructionIds = await Promise.all(
-          secretRecipeData.instructions.map(async (instruction) => {
-              const { step, text } = instruction;
-              const newInstruction = await Instruction.create({ step, text });
-              return newInstruction._id;
-          })
-      );
+          // Create each ingredient and store its ID
+          const ingredientIds = await Promise.all(
+              secretRecipeData.ingredients.map(async (ingredient) => {
+                  const { name, unit, quantity } = ingredient;
+                  if (!name || !unit || quantity === undefined) {
+                      throw new Error("All ingredient fields must be provided.");
+                  }
+                  const newIngredient = await Ingredient.create({ name, unit, quantity });
+                  return newIngredient._id;
+              })
+          );
   
-      // Create the secret recipe using the ingredient and instruction IDs
-      const recipe = await SecretRecipe.create({
-          title: secretRecipeData.title,
-          author: context.user.username,
-          ingredients: ingredientIds, // Store array of ObjectId references
-          instructions: instructionIds, // Store array of ObjectId references
-          image: secretRecipeData.image,
-          recipeId: secretRecipeData.recipeId,
-      });
+          // Create each instruction and store its ID
+          const instructionIds = await Promise.all(
+              secretRecipeData.instructions.map(async (instruction) => {
+                  const { step, text } = instruction;
+                  if (!step || !text) {
+                      throw new Error("All instruction fields must be provided.");
+                  }
+                  const newInstruction = await Instruction.create({ step, text });
+                  return newInstruction._id;
+              })
+          );
   
-      // Update the user's secret recipes array
-      await User.findByIdAndUpdate(
-          context.user._id,
-          { $addToSet: { secretRecipes: recipe._id } },
-          { new: true }
-      );
+          // Create the secret recipe using the ingredient and instruction IDs
+          const recipe = await SecretRecipe.create({
+              title: secretRecipeData.title,
+              author: context.user.username,
+              ingredients: ingredientIds, // Store array of ObjectId references
+              instructions: instructionIds, // Store array of ObjectId references
+              image: secretRecipeData.image,
+          });
   
-      // Return the full recipe with populated ingredients and instructions
-      const fullRecipe = await SecretRecipe.findById(recipe._id)
-          .populate("ingredients")
-          .populate("instructions");
+          // Update the user's secret recipes array
+          await User.findByIdAndUpdate(
+              context.user._id,
+              { $addToSet: { secretRecipes: recipe._id } },
+              { new: true }
+          );
   
-      return fullRecipe;
+          // Return the full recipe with populated ingredients and instructions
+          const fullRecipe = await SecretRecipe.findById(recipe._id)
+              .populate("ingredients")
+              .populate("instructions");
+  
+          return fullRecipe;
+  
+      } catch (error) {
+          console.error("Error adding recipe:", error);
+          throw new Error("Could not add the recipe. Please try again.");
+      }
   },
+  
   addIngredient: async (_, { name, unit, quantity }) => {
     const newIngredient = await Ingredient.create({ name, unit, quantity });
     return newIngredient;

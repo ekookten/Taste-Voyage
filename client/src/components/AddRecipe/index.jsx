@@ -113,29 +113,29 @@ const AddRecipe = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+    
         if (ingredients.length === 0) {
             alert("Please add at least one ingredient.");
             return;
         }
-       
+    
         try {
-            // Generate a new recipe ID manually
-            const recipeId = new ObjectId(); 
+            // Set a default image if none is provided
+            const defaultImage = 'https://static.vecteezy.com/system/resources/previews/005/292/398/non_2x/cute-sushi-roll-character-confused-free-vector.jpg';
+            const recipeImage = image || defaultImage;
     
             const secretRecipeData = {
-                recipeId: recipeId.toString(), 
                 title,
                 ingredients: ingredients.map((ingredient) => ({
-                    name: ingredient.name, 
-                    unit: ingredient.unit,   
-                    quantity: ingredient.quantity.toString(), 
+                    name: ingredient.name,
+                    unit: ingredient.unit,
+                    quantity: ingredient.quantity.toString(),
                 })),
                 instructions: instructions.map((instruction) => ({
-                    step: instruction.step.toString(), 
+                    step: instruction.step.toString(),
                     text: instruction.text,
                 })),
-                image,
+                image: recipeImage,
             };
     
             // Add the secret recipe (make sure your mutation handles the ID)
@@ -143,8 +143,6 @@ const AddRecipe = () => {
                 variables: { secretRecipeData },
             });
     
-            console.log(secretRecipeData);
-        
             // Clear the form after submission
             setTitle('');
             setIngredients([]);
@@ -154,10 +152,9 @@ const AddRecipe = () => {
             setInstructions([]);
             setNewInstruction('');
             setImage(null);
-        
+    
             alert("Your Secret Recipe has been added!");
-           
-            navigate(`/me`); 
+            navigate(`/me`);
         } catch (error) {
             console.error("Error adding recipe:", error);
         }

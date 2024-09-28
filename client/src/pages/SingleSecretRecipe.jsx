@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { GET_SECRET_RECIPE } from '../utils/queries'; // Ensure this imports correctly
+import { GET_SECRET_RECIPE } from '../utils/queries';
 
 const SingleSecretRecipe = () => {
   const { recipeId } = useParams(); // Extract recipeId from URL parameters
@@ -13,9 +13,9 @@ const SingleSecretRecipe = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const recipe = data?.getSecretRecipe || {}; // Fetch the recipe from the query result
-  const ingredients = recipe.ingredients || [];
-  const instructions = recipe.instructions || [];
+  const recipe = data?.getSecretRecipe; // Directly fetch the populated recipe
+
+  if (!recipe) return <p>No recipe found.</p>;
 
   return (
     <div>
@@ -23,7 +23,7 @@ const SingleSecretRecipe = () => {
 
       {recipe.image && (
         <img
-          src={recipe.image}
+        src={recipe.image}
           alt={`The cover of ${recipe.title}`}
           style={{ width: '200px', height: '200px' }}
         />
@@ -32,8 +32,8 @@ const SingleSecretRecipe = () => {
       <div className="content">
         <h2 className="title is-4">Ingredients</h2>
         <ul>
-          {ingredients.length > 0 ? (
-            ingredients.map((ingredient, index) => (
+          {recipe.ingredients.length > 0 ? (
+            recipe.ingredients.map((ingredient, index) => (
               <li key={index}>
                 {ingredient.name}: {ingredient.quantity} {ingredient.unit}
               </li>
@@ -47,9 +47,11 @@ const SingleSecretRecipe = () => {
       <div className="content">
         <h2 className="title is-4">Instructions</h2>
         <ol className="content">
-          {instructions.length > 0 ? (
-            instructions.map((step, index) => (
-              <li key={index}>Step {index + 1}: {step.text}</li>
+          {recipe.instructions.length > 0 ? (
+            recipe.instructions.map((step, index) => (
+              <li key={index}>
+                Step {step.step}: {step.text}
+              </li>
             ))
           ) : (
             <li>No instructions available for this recipe.</li>
