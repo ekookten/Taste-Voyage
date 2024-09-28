@@ -35,50 +35,61 @@ const SingleRecipe = () => {
     return <div>Loading...</div>; // Show loading state while fetching data
   }
 
-return (
-    <div>
-        {/* Display the recipe title */}
-        <h1 className="title is-4" >{recipe.title || "No Title Available"}</h1>
-
-        {/* Display the recipe image */}
-        {recipe.image && (
-            <img src={recipe.image} alt={`The cover of ${recipe.title}`} />
-        )}
-
-
-
-
-<div className="content">
-<h2 className="title is-4">Ingredients</h2>
-    <ul>
-        {ingredients.length > 0 ? (
+  return (
+    <div className="container mt-5">
+      {/* Display the recipe title */}
+      <div className="box has-background-light" style={{ borderRadius: '8px', padding: '10px', marginBottom: '20px' }}>
+        <h1 className="title is-2 has-text-centered">{recipe.title || "No Title Available"}</h1>
+      </div>
+  
+      {/* Display the recipe image */}
+      {recipe.image && (
+        <div className="card" style={{ display: 'flex', justifyContent: 'center', border: 'none', boxShadow: 'none' }}>
+          <div className="card-image" style={{ border: 'none', boxShadow: 'none' }}>
+            <figure className="image" style={{ width: '350px', height: 'auto', margin: '0', border: 'none' }}>
+              <img 
+                src={recipe.image} 
+                alt={`The cover of ${recipe.title}`} 
+                style={{ width: '100%', height: 'auto', border: 'none', boxShadow: 'none', borderRadius: '8px' }} 
+              />
+            </figure>
+          </div>
+        </div>
+      )}
+  
+      {/* Ingredients Section */}
+      <div className="box mt-5" style={{ backgroundColor: '#f9f9f9', borderRadius: '8px', padding: '20px' }}>
+        <h2 className="title is-4">Ingredients</h2>
+        <ul>
+          {ingredients.length > 0 ? (
             ingredients.map((ingredient, index) => (
-                <li key={index}>{ingredient.name}: {ingredient.amount} {ingredient.unit}</li>
+              <li key={index}>
+                <strong>{ingredient.name}</strong>: {ingredient.amount} {ingredient.unit}
+              </li>
             ))
-        ) : (
+          ) : (
             <li>No ingredients available for this recipe.</li>
-        )}
-    </ul>
-</div>
-
-
-<div className="content">
-<h2 className="title is-4">Instructions</h2>
-{/* List the instructions steps */
-<ol className="content">
-    {instructions.length > 0 ? (
-        instructions.map((step, index) => (
-            <li key={index}>Step {index + 1}: {step.step}</li>
-        ))
-    ) : (
-        <li>No instructions available for this recipe.</li>
-    )}
-</ol>}
-</div>
-      
-   
+          )}
+        </ul>
+      </div>
+  
+      {/* Instructions Section */}
+      <div className="box mt-5" style={{ backgroundColor: '#f9f9f9', borderRadius: '8px', padding: '20px' }}>
+        <h2 className="title is-4">Instructions</h2>
+        <ol>
+          {instructions.length > 0 ? (
+            instructions.map((step, index) => (
+              <li key={index}>Step {index + 1}: {step.step}</li>
+            ))
+          ) : (
+            <li>No instructions available for this recipe.</li>
+          )}
+        </ol>
+      </div>
     </div>
-);
+  );
+  
+  
 };
 
 export default SingleRecipe;
