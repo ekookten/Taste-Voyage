@@ -117,7 +117,9 @@ const AddRecipe = () => {
             alert("Please add at least one ingredient.");
             return;
         }
-    
+    if (!image) {
+        setImage('https://via.placeholder.com/150');
+    }
         try {
             const secretRecipeData = {
                 title,
