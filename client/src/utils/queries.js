@@ -14,10 +14,12 @@ export const GET_ME = gql`
       secretRecipes {
         _id
         title
+        username
         image
         recipeId
         ingredients {
           _id
+          
         }
         instructions {
           _id
@@ -26,6 +28,25 @@ export const GET_ME = gql`
     }
   }
   
+`;
+export const GET_SECRET_RECIPE = gql`
+  query getSecretRecipe($recipeId: ID!) {
+    getSecretRecipe(recipeId: $recipeId) {
+      _id
+      recipeId
+      title
+      image
+      ingredients {
+        name
+        unit
+        quantity
+      }
+      instructions {
+        step
+        text
+      }
+    }
+  }
 `;
 export const GET_RECIPE = gql`
     query recipe($recipeId: ID!) {

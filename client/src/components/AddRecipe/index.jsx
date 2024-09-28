@@ -4,6 +4,7 @@ import { useMutation } from '@apollo/client';
 import { ADD_SECRET_RECIPE, ADD_INGREDIENT, ADD_INSTRUCTION } from '../../utils/mutations'; // Import the ADD_INSTRUCTION mutation
 import Auth from '../../utils/auth';
 import decode from 'jwt-decode';
+import ObjectId  from 'mongoose';
 
 const AddRecipe = () => {
     const navigate = useNavigate();
@@ -112,36 +113,38 @@ const AddRecipe = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+        
         if (ingredients.length === 0) {
             alert("Please add at least one ingredient.");
             return;
         }
-    if (!image) {
-        setImage('https://via.placeholder.com/150');
-    }
+       
         try {
+            // Generate a new recipe ID manually
+            const recipeId = new ObjectId(); 
+    
             const secretRecipeData = {
+                recipeId: recipeId.toString(), 
                 title,
                 ingredients: ingredients.map((ingredient) => ({
-                    name: ingredient.name,  // Assuming this is a string
-                    unit: ingredient.unit,   // Assuming this is a string
-                    quantity: ingredient.quantity.toString(), // Convert quantity to string
+                    name: ingredient.name, 
+                    unit: ingredient.unit,   
+                    quantity: ingredient.quantity.toString(), 
                 })),
                 instructions: instructions.map((instruction) => ({
-                    step: instruction.step.toString(), // Convert step to string if necessary
-                    text: instruction.text, // Assuming this is a string
+                    step: instruction.step.toString(), 
+                    text: instruction.text,
                 })),
                 image,
-                recipeId: Math.floor(Math.random() * 1000), 
             };
     
-            const { data } = await addSecretRecipe({
+            // Add the secret recipe (make sure your mutation handles the ID)
+            await addSecretRecipe({
                 variables: { secretRecipeData },
             });
-
-            console.log(secretRecipeData);
     
+            console.log(secretRecipeData);
+        
             // Clear the form after submission
             setTitle('');
             setIngredients([]);
@@ -151,13 +154,15 @@ const AddRecipe = () => {
             setInstructions([]);
             setNewInstruction('');
             setImage(null);
-    
+        
             alert("Your Secret Recipe has been added!");
-            navigate('/me');
+           
+            navigate(`/me`); 
         } catch (error) {
             console.error("Error adding recipe:", error);
         }
     };
+    
 
     return (
         <div className="container">

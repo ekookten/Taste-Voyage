@@ -1,5 +1,6 @@
 const { User, Recipe, Ingredient, Instruction, SecretRecipe } = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
+const { Types } = require('mongoose');
 
 const resolvers = {
   Query: {
@@ -11,6 +12,14 @@ const resolvers = {
       const params = username ? { username } : {};
       return Recipe.find(params).sort({ createdAt: -1 });
     },
+    getSecretRecipe: async (parent, { recipeId }, context) => {
+  if (!Types.ObjectId.isValid(recipeId)) {
+    throw new Error("Invalid recipe ID");
+  }
+
+  // Fetch the recipe from your database using ObjectId
+  return await SecretRecipe.findById(Types.ObjectId(recipeId));
+},
     recipe: async (parent, { recipeId }) => {
       // Changed from 'thought' to 'recipe'
       return Recipe.findOne({ _id: recipeId })
@@ -142,6 +151,23 @@ addInstruction: async (_, { step, text }) => {
     const newInstruction = await Instruction.create({ text, step });
     return newInstruction;
 },
+removeSecretRecipe: async (parent, { recipeId }, context) => {
+  if (context.user) {
+    const recipe = await SecretRecipe.findOneAndDelete({
+      _id: recipeId,
+      recipeAuthor: context.user.username,
+    });
+
+    await User.findOneAndUpdate(
+      { _id: context.user._id },
+      { $pull: { secretRecipes: recipeId} }
+    );
+
+    return recipe;
+  }
+  throw AuthenticationError;
+},
+
     removeRecipe: async (parent, { recipeId }, context) => {
       if (context.user) {
         const recipe = await Recipe.findOneAndDelete({

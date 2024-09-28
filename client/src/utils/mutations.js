@@ -7,6 +7,8 @@ export const ADD_SECRET_RECIPE = gql`
         addSecretRecipe(secretRecipeData: $secretRecipeData) { 
             _id
             title
+               username
+                recipeId
             ingredients{
                 name
                 unit
@@ -19,6 +21,44 @@ export const ADD_SECRET_RECIPE = gql`
         }
     }
 `;
+export const REMOVE_SECRET_RECIPE = gql`
+  mutation removeSecretRecipe($recipeId: ID!) {
+    removeSecretRecipe(recipeId: $recipeId) {
+      _id
+         username
+         secretRecipes{
+            _id
+            title
+            image
+            instructions{
+                text
+                step
+            }
+            ingredients{
+                name
+                unit
+                quantity
+            }
+            recipeId
+      }
+    }
+  }
+`;
+export const REMOVE_RECIPE = gql`
+  mutation removeRecipe($recipeId: ID!) {
+    removeRecipe(recipeId: $recipeId) {
+      _id
+      username
+      savedRecipes {
+      _id
+        title
+        image
+        recipeId
+      }
+    }
+  }
+`;
+
 export const ADD_INGREDIENT = gql`
     mutation addIngredient($name: String!, $unit: String!, $quantity: Float!) {
         addIngredient(name: $name, unit: $unit, quantity: $quantity) {
@@ -55,40 +95,8 @@ export const SAVE_RECIPE = gql`
 `;
 
 // Mutation to remove a recipe from the saved list
-export const REMOVE_RECIPE = gql`
-  mutation removeRecipe($recipeId: ID!) {
-    removeRecipe(recipeId: $recipeId) {
-      _id
-      username
-      savedRecipes {
-      _id
-        title
-        image
-        recipeId
-      }
-    }
-  }
-`;
 
-export const REMOVE_SECRET_RECIPE = gql`
-  mutation removeRecipe($recipeId: ID!) {
-    removeRecipe(recipeId: $recipeId) {
-      _id
-      title
-      author
-      ingredients{
-          name
-          unit
-          quantity
-      } 
-      instructions{
-          text
-          step
-      }
-      image
-    }
-  }
-`;
+
 
 // Mutation to add a new user
 export const ADD_USER = gql`
