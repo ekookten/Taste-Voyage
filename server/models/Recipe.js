@@ -10,10 +10,10 @@ const recipeSchema = new Schema({
     type: String,
     required: false
   },
-    recipeId: {
+  recipeId: {
     type: Number,
     required: true,
-    },
+  },
   title: {
     type: String,
     required: true,

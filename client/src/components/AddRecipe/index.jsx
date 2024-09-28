@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import { ADD_RECIPE, ADD_INGREDIENT, ADD_INSTRUCTION } from '../../utils/mutations'; // Import the ADD_INSTRUCTION mutation
+import { ADD_SECRET_RECIPE, ADD_INGREDIENT, ADD_INSTRUCTION } from '../../utils/mutations'; // Import the ADD_INSTRUCTION mutation
 import Auth from '../../utils/auth';
 import decode from 'jwt-decode';
 
 const AddRecipe = () => {
     const navigate = useNavigate();
-    const [addSecretRecipe] = useMutation(ADD_RECIPE);
+    const [addSecretRecipe] = useMutation(ADD_SECRET_RECIPE);
     const [addIngredient] = useMutation(ADD_INGREDIENT);
     const [addInstruction] = useMutation(ADD_INSTRUCTION); // Mutation for adding instructions
 
@@ -47,16 +47,10 @@ const AddRecipe = () => {
 
     const handleAddIngredient = async () => {
         if (
-            newIngredientName.trim() !== '' &&
+            newIngredientName.trim() !== '' &&  // Ensure the name is not empty
             newIngredientUnit.trim() !== '' &&
             newIngredientQuantity.trim() !== ''
         ) {
-            console.log('Adding Ingredient:', {
-                name: newIngredientName,
-                unit: newIngredientUnit,
-                quantity: parseFloat(newIngredientQuantity),
-            });
-
             try {
                 const { data } = await addIngredient({ 
                     variables: { 
@@ -65,13 +59,11 @@ const AddRecipe = () => {
                         quantity: parseFloat(newIngredientQuantity.trim()) 
                     } 
                 });
-
+    
                 if (data && data.addIngredient) {
                     setIngredients([...ingredients, data.addIngredient]);
-                } else {
-                    console.error("Unexpected response:", data);
                 }
-
+    
                 // Reset input fields
                 setNewIngredientName('');
                 setNewIngredientUnit('');
@@ -80,6 +72,8 @@ const AddRecipe = () => {
             } catch (error) {
                 console.error("Error adding ingredient:", error);
             }
+        } else {
+            alert("Ingredient name, unit, and quantity are required.");
         }
     };
 
@@ -88,27 +82,27 @@ const AddRecipe = () => {
     };
 
     const handleAddInstruction = async () => {
-        if (newInstruction.trim() !== '') {
-            const stepNumber = instructions.length + 1; 
+        if (newInstruction.trim() !== '') {  // Ensure the instruction text is not empty
             try {
+                const stepNumber = instructions.length + 1;
                 const { data } = await addInstruction({
                     variables: {
                         text: newInstruction.trim(),
                         step: stepNumber.toString(),
                     },
                 });
-                
+    
                 if (data && data.addInstruction) {
                     setInstructions([...instructions, data.addInstruction]);
-                } else {
-                    console.error("Unexpected response:", data);
                 }
-
+    
                 setNewInstruction('');
                 setShowInstructionInput(false);
             } catch (error) {
                 console.error("Error adding instruction:", error);
             }
+        } else {
+            alert("Instruction text cannot be empty.");
         }
     };
 
@@ -127,7 +121,6 @@ const AddRecipe = () => {
         try {
             const secretRecipeData = {
                 title,
-                author,
                 ingredients: ingredients.map((ingredient) => ({
                     name: ingredient.name,  // Assuming this is a string
                     unit: ingredient.unit,   // Assuming this is a string
@@ -144,6 +137,8 @@ const AddRecipe = () => {
             const { data } = await addSecretRecipe({
                 variables: { secretRecipeData },
             });
+
+            console.log(secretRecipeData);
     
             // Clear the form after submission
             setTitle('');

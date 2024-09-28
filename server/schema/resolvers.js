@@ -21,7 +21,7 @@ const resolvers = {
     },
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate("savedRecipes");
+        return User.findOne({ _id: context.user._id }).populate("savedRecipes").populate("secretRecipes");
       }
       throw AuthenticationError;
     },
@@ -91,46 +91,47 @@ const resolvers = {
           throw new AuthenticationError("Authentication required");
       }
   
-      // Ensure each ingredient has the right properties
-      const ingredients = await Promise.all(
+      // Create each ingredient and store its ID
+      const ingredientIds = await Promise.all(
           secretRecipeData.ingredients.map(async (ingredient) => {
               const { name, unit, quantity } = ingredient;
-              // Create the ingredient with the correct structure
-              return await Ingredient.create({ name, unit, quantity });
+              const newIngredient = await Ingredient.create({ name, unit, quantity });
+              return newIngredient._id;
           })
       );
   
-      // Process instructions
-      const instructions = await Promise.all(
-        secretRecipeData.instructions.map(async (instruction) => {
-              const newInstruction = await Instruction.create(instruction);
+      // Create each instruction and store its ID
+      const instructionIds = await Promise.all(
+          secretRecipeData.instructions.map(async (instruction) => {
+              const { step, text } = instruction;
+              const newInstruction = await Instruction.create({ step, text });
               return newInstruction._id;
           })
       );
   
-      // Create the recipe
+      // Create the secret recipe using the ingredient and instruction IDs
       const recipe = await SecretRecipe.create({
           title: secretRecipeData.title,
           author: context.user.username,
-          ingredients,
-          instructions,
+          ingredients: ingredientIds, // Store array of ObjectId references
+          instructions: instructionIds, // Store array of ObjectId references
           image: secretRecipeData.image,
-          recipeId: secretRecipeData.recipeId
+          recipeId: secretRecipeData.recipeId,
       });
   
-      // Update the user's savedRecipes
+      // Update the user's secret recipes array
       await User.findByIdAndUpdate(
           context.user._id,
-          { $addToSet: { savedRecipes: recipe._id } },
+          { $addToSet: { secretRecipes: recipe._id } },
           { new: true }
       );
   
-      // Fetch the full recipe including populated ingredients and instructions
+      // Return the full recipe with populated ingredients and instructions
       const fullRecipe = await SecretRecipe.findById(recipe._id)
           .populate("ingredients")
           .populate("instructions");
   
-      return fullRecipe; // Return the full recipe with populated ingredients
+      return fullRecipe;
   },
   addIngredient: async (_, { name, unit, quantity }) => {
     const newIngredient = await Ingredient.create({ name, unit, quantity });

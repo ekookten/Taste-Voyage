@@ -4,6 +4,7 @@ const typeDefs = `
     username: String
     email: String
     savedRecipes: [Recipe]
+    secretRecipes: [SecretRecipe]
   }
 
   type Recipe {
@@ -21,7 +22,6 @@ const typeDefs = `
     _id: ID
     title: String
     username: String
-    author: String
     ingredients: [Ingredient]
     instructions: [Instruction]
     image: String
@@ -68,7 +68,6 @@ const typeDefs = `
 
  input secretRecipeInput {
     title: String!
-    author: String!
     ingredients: [IngredientInput!]! 
     instructions: [InstructionInput!]!   
     image: String 

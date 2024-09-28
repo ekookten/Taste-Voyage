@@ -11,6 +11,18 @@ export const GET_ME = gql`
         image
         recipeId
       }
+      secretRecipes {
+        _id
+        title
+        image
+        recipeId
+        ingredients {
+          _id
+        }
+        instructions {
+          _id
+        }
+      }
     }
   }
   
