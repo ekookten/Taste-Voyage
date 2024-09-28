@@ -33,6 +33,7 @@ const Profile = () => {
         variables: { recipeId },
         refetchQueries: [{ query: GET_ME }]
       });
+      console.log(recipeId)
       setSavedRecipes((prevRecipes) =>
         prevRecipes.filter((recipe) => recipe._id !== recipeId)
       );
@@ -48,6 +49,7 @@ const Profile = () => {
         variables: { recipeId },
         refetchQueries: [{ query: GET_ME }]
       });
+      console.log(recipeId)
       setSecretRecipes((prevRecipes) =>
         prevRecipes.filter((recipe) => recipe._id !== recipeId)
       );
@@ -92,7 +94,7 @@ const Profile = () => {
                       />
                       <h3>{recipe.title}</h3>
                       {recipe.description && <p>{recipe.description}</p>}
-                      <Link to={`/recipe/${recipe.recipeId}`} className="button is-primary">View Details</Link>
+                      <Link to={`/secret/${recipe._id}`} className="button is-primary">View Details</Link>
                       <button onClick={(e) => { e.stopPropagation(); handleDeleteSecretRecipe(recipe._id); }}>Remove This Recipe</button>
             </div>
           ))}

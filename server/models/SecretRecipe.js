@@ -10,10 +10,6 @@ const secretRecipeSchema = new Schema({
         type: String,
         required: false
     },
-    recipeId: {
-        type: Number,
-        required: true,
-    },
     title: {
         type: String,
         required: true,
