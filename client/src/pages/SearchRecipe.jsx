@@ -113,7 +113,7 @@ const SearchRecipes = (props) => {
           </form>
         </div>
       </div>
-
+  
       <div className="container">
         <h2 className="title pt-5">
           {searchedRecipes.length
@@ -123,21 +123,20 @@ const SearchRecipes = (props) => {
         <div className="columns is-multiline">
           {searchedRecipes.map((recipe) => {
             return (
-              <div className="column is-one-third" key={recipe.recipeId}>
-                <div className="card">
-                  {recipe.image ? (
+              <div className="column is-one-quarter" key={recipe.recipeId}>
+                <div className="card" style={{ maxWidth: '250px' }}> 
+                  {recipe.image && (
                     <div className="card-image">
                       <figure className="image is-4by3">
                         <img
-                          src={recipe.image}
+                          src={recipe.image} 
                           alt={`The cover for ${recipe.title}`}
                         />
                       </figure>
                     </div>
-                  ) : null}
+                  )}
                   <div className="card-content">
-                    <p className="title">{recipe.title}</p>
-                    <p className="subtitle is-6"></p>
+                    <p className="title is-6">{recipe.title}</p> 
                     {Auth.loggedIn() && (
                       <button
                         disabled={savedRecipeIds?.some(
@@ -149,12 +148,12 @@ const SearchRecipes = (props) => {
                         {savedRecipeIds?.some(
                           (savedRecipeId) => savedRecipeId === recipe.recipeId
                         )
-                          ? "This recipe has already been saved!"
+                          ? <span className="is-size-7">This recipe has already been saved!</span>
                           : "Save this Recipe!"}
                       </button>
                     )}
                     <Link
-                      to={`/recipe/${recipe.recipeId}`} // Use Link to pass the recipeId
+                      to={`/recipe/${recipe.recipeId}`}
                       className="button is-primary is-fullwidth mt-3"
                     >
                       View Details

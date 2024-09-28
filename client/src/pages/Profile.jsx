@@ -68,40 +68,88 @@ const Profile = () => {
   }
 
   return (
-    <div>
-      <h2>{Auth.loggedIn() ? `${userData.username}'s saved recipes` : 'Log in to see saved recipes'}</h2>
-      {savedRecipes.length > 0 && (
-        <div className="recipe-grid">
+    <div className="container">
+      <h2 className="title has-text-centered is-size-4 box has-background-light">
+        {Auth.loggedIn() ? `${userData.username}'s Saved Recipes` : 'Log in to see saved recipes'}
+      </h2>
+  
+      {savedRecipes.length > 0 ? (
+        <div className="columns is-multiline">
           {savedRecipes.map((recipe) => (
-            <div className="recipe-card" key={recipe._id}>
-              {recipe.image && <img src={recipe.image} alt={recipe.title} className="recipe-image" />}
-              <h3>{recipe.title}</h3>
-              {recipe.description && <p>{recipe.description}</p>}
-              <Link to={`/recipe/${recipe.recipeId}`} className="button is-primary">View Details</Link>
-              <button onClick={(e) => { e.stopPropagation(); handleDeleteRecipe(recipe._id); }}>Remove This Recipe</button>
+            <div className="column is-one-third" key={recipe._id}>
+              <div className="card" style={{ maxWidth: '300px', margin: '0 auto' }}>
+                {recipe.image && (
+                  <div className="card-image">
+                    <figure className="image is-4by3">
+                      <img src={recipe.image} alt={recipe.title} />
+                    </figure>
+                  </div>
+                )}
+                <div className="card-content">
+                  <h3 className="title is-5">{recipe.title}</h3>
+                  {recipe.description && <p className="subtitle is-6">{recipe.description}</p>}
+                  <div className="buttons">
+                    <Link to={`/recipe/${recipe.recipeId}`} className="button is-primary">View Details</Link>
+                    <button
+                      className="button is-danger"
+                      onClick={(e) => { e.stopPropagation(); handleDeleteRecipe(recipe._id); }}
+                    >
+                      Remove This Recipe
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
-      )}{secretRecipes.length > 0 && (
-        <div className="recipe-grid">
-          {secretRecipes.map((recipe) => (
-                    <div className="recipe-card" key={recipe._id}>
-                      <img 
-                      src={recipe.image || 'https://static.vecteezy.com/system/resources/previews/005/292/398/non_2x/cute-sushi-roll-character-confused-free-vector.jpg'} 
-                      alt={recipe.title} 
-                      className="recipe-image" 
-                      style={{ width: '150px', height: '150px' }}
-                      />
-                      <h3>{recipe.title}</h3>
-                      {recipe.description && <p>{recipe.description}</p>}
-                      <Link to={`/secret/${recipe._id}`} className="button is-primary">View Details</Link>
-                      <button onClick={(e) => { e.stopPropagation(); handleDeleteSecretRecipe(recipe._id); }}>Remove This Recipe</button>
-            </div>
-          ))}
+      ) : (
+        <div className="notification is-warning has-text-centered" style={{ maxWidth: '300px', margin: '0 auto' }}>
+          You Don't Have Any Saved Recipes.
         </div>
       )}
+
+      <h2 className="title has-text-centered is-size-4 box has-background-light">
+        {Auth.loggedIn() ? `${userData.username}'s Secret Recipes` : 'Log in to see saved recipes'}
+      </h2>
+      
+      {secretRecipes.length > 0 ? (
+        <div className="columns is-multiline">
+          {secretRecipes.map((recipe) => (
+            <div className="column is-one-third" key={recipe._id}>
+              <div className="card" style={{ maxWidth: '300px', margin: '0 auto' }}>
+                <div className="card-image">
+                  <figure className="image is-4by3">
+                    <img 
+                      src={recipe.image || 'https://static.vecteezy.com/system/resources/previews/005/292/398/non_2x/cute-sushi-roll-character-confused-free-vector.jpg'} 
+                      alt={recipe.title} 
+                    />
+                  </figure>
+                </div>
+                <div className="card-content">
+                  <h3 className="title is-5">{recipe.title}</h3>
+                  {recipe.description && <p className="subtitle is-6">{recipe.description}</p>}
+                  <div className="buttons">
+                    <Link to={`/secret/${recipe._id}`} className="button is-primary">View Details</Link>
+                    <button
+                      className="button is-danger"
+                      onClick={(e) => { e.stopPropagation(); handleDeleteSecretRecipe(recipe._id); }}
+                    >
+                      Remove This Recipe
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="notification is-warning has-text-centered" style={{ maxWidth: '300px', margin: '0 auto' }}>
+        You Don't Have Any Secret Recipes.
+      </div>
+      )}
+  
       {/* Add Recipe Button */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+      <div className="has-text-centered" style={{ marginTop: '20px' }}>
         <Link to="/add-recipe" className="button is-success">Create Your Secret Recipe</Link>
       </div>
     </div>

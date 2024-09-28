@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/client';
 import { ADD_SECRET_RECIPE, ADD_INGREDIENT, ADD_INSTRUCTION } from '../../utils/mutations'; // Import the ADD_INSTRUCTION mutation
 import Auth from '../../utils/auth';
 import decode from 'jwt-decode';
-import ObjectId  from 'mongoose';
+;
 
 const AddRecipe = () => {
     const navigate = useNavigate();
@@ -162,8 +162,8 @@ const AddRecipe = () => {
     
 
     return (
-        <div className="container">
-            <h1 className="title is-3 has-text-centered">Add a New Recipe</h1>
+        <div className="container box has-background-light" style={{ width: '50%', margin: '0 auto' }}>
+            <h1 className="title is-3 has-text-centered box has-background-light">Add Your Secret Recipe</h1>
             <form onSubmit={handleSubmit} className="box">
                 <div className="field">
                     <label className="label">Title:</label>
@@ -177,7 +177,7 @@ const AddRecipe = () => {
                         />
                     </div>
                 </div>
-
+    
                 <div className="field">
                     <label className="label">Ingredients:</label>
                     <ul>
@@ -206,7 +206,7 @@ const AddRecipe = () => {
                                     placeholder="Name"
                                 />
                             </div>
-
+    
                             <div className="control is-expanded">
                                 <input 
                                     className="input" 
@@ -237,7 +237,7 @@ const AddRecipe = () => {
                         </div>
                     )}
                 </div>
-
+    
                 <div className="field">
                     <label className="label">Instructions:</label>
                     <ul>
@@ -278,7 +278,7 @@ const AddRecipe = () => {
                         </div>
                     )}
                 </div>
-
+    
                 <div className="field">
                     <label className="label">Image:</label>
                     <div className="control">
@@ -290,18 +290,21 @@ const AddRecipe = () => {
                         />
                     </div>
                 </div>
-
-                <div className="field">
-                    <div className="control">
-                        <button className="button is-primary is-fullwidth" type="submit">Add Recipe</button>
+    
+                <div className="field has-text-centered">
+                    <div className="control" >
+                        <button className="button is-primary" style={{ width: '40%', margin: '0 auto' }} type="submit">Add Recipe</button>
                     </div>
                 </div>
+    
                 <div className="author-info">
                     <h2 className="subtitle is-4 has-text-centered">Creator: {author}</h2>
                 </div>
             </form>
         </div>
     );
+    
+    
 };
 
 export default AddRecipe;

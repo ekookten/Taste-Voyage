@@ -18,24 +18,35 @@ const SingleSecretRecipe = () => {
   if (!recipe) return <p>No recipe found.</p>;
 
   return (
-    <div>
-      <h1 className="title is-4">{recipe.title || 'No Title Available'}</h1>
-
+    <div className="container mt-5">
+      {/* Display the recipe title */}
+      <div className="box has-background-light" style={{ borderRadius: '8px', padding: '5px', marginBottom: '20px' }}>
+        <h1 className="title is-2 has-text-centered">{recipe.title || 'No Title Available'}</h1>
+      </div>
+  
+      {/* Display the recipe image */}
       {recipe.image && (
-        <img
-        src={recipe.image}
-          alt={`The cover of ${recipe.title}`}
-          style={{ width: '200px', height: '200px' }}
-        />
+        <div className="card" style={{ display: 'flex', justifyContent: 'center', border: 'none', boxShadow: 'none' }}>
+          <div className="card-image" style={{ border: 'none', boxShadow: 'none' }}>
+            <figure className="image"style={{ width: '350px', height: 'auto', margin: '0', border: 'none' }}>
+              <img 
+                src={recipe.image} 
+                alt={`The cover of ${recipe.title}`} 
+                style={{ width: '100%', height: 'auto', border: 'none', boxShadow: 'none', borderRadius: '8px' }} 
+              />
+            </figure>
+          </div>
+        </div>
       )}
-
-      <div className="content">
+  
+      {/* Ingredients Section */}
+      <div className="box mt-5" style={{ backgroundColor: '#f9f9f9', borderRadius: '8px', padding: '20px' }}>
         <h2 className="title is-4">Ingredients</h2>
         <ul>
           {recipe.ingredients.length > 0 ? (
             recipe.ingredients.map((ingredient, index) => (
               <li key={index}>
-                {ingredient.name}: {ingredient.quantity} {ingredient.unit}
+                <strong>{ingredient.name}</strong>: {ingredient.quantity} {ingredient.unit}
               </li>
             ))
           ) : (
@@ -43,14 +54,15 @@ const SingleSecretRecipe = () => {
           )}
         </ul>
       </div>
-
-      <div className="content">
+  
+      {/* Instructions Section */}
+      <div className="box mt-5" style={{ backgroundColor: '#f9f9f9', borderRadius: '8px', padding: '20px' }}>
         <h2 className="title is-4">Instructions</h2>
-        <ol className="content">
+        <ol>
           {recipe.instructions.length > 0 ? (
             recipe.instructions.map((step, index) => (
               <li key={index}>
-                Step {step.step}: {step.text}
+                <strong>Step {step.step}:</strong> {step.text}
               </li>
             ))
           ) : (
@@ -60,6 +72,8 @@ const SingleSecretRecipe = () => {
       </div>
     </div>
   );
+  
+  
 };
 
 export default SingleSecretRecipe;
