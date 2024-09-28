@@ -80,16 +80,20 @@ const Profile = () => {
             </div>
           ))}
         </div>
-      )}
-      {secretRecipes.length > 0 && (
+      )}{secretRecipes.length > 0 && (
         <div className="recipe-grid">
           {secretRecipes.map((recipe) => (
-            <div className="recipe-card" key={recipe._id}>
-              {recipe.image && <img src={recipe.image} alt={recipe.title} className="recipe-image" />}
-              <h3>{recipe.title}</h3>
-              {recipe.description && <p>{recipe.description}</p>}
-              <Link to={`/recipe/${recipe.recipeId}`} className="button is-primary">View Details</Link>
-              <button onClick={(e) => { e.stopPropagation(); handleDeleteSecretRecipe(recipe._id); }}>Remove This Recipe</button>
+                    <div className="recipe-card" key={recipe._id}>
+                      <img 
+                      src={recipe.image || 'https://static.vecteezy.com/system/resources/previews/005/292/398/non_2x/cute-sushi-roll-character-confused-free-vector.jpg'} 
+                      alt={recipe.title} 
+                      className="recipe-image" 
+                      style={{ width: '150px', height: '150px' }}
+                      />
+                      <h3>{recipe.title}</h3>
+                      {recipe.description && <p>{recipe.description}</p>}
+                      <Link to={`/recipe/${recipe.recipeId}`} className="button is-primary">View Details</Link>
+                      <button onClick={(e) => { e.stopPropagation(); handleDeleteSecretRecipe(recipe._id); }}>Remove This Recipe</button>
             </div>
           ))}
         </div>
