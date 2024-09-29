@@ -163,7 +163,7 @@ const AddRecipe = () => {
 
     return (
         <div className="container box has-background-light" style={{ width: '50%', margin: '0 auto' }}>
-            <h1 className="title is-3 has-text-centered box has-background-light">Add Your Secret Recipe</h1>
+            <h1 className="title is-3 has-text-centered box has-background-light has-text-black">Add Your Secret Recipe</h1>
             <form onSubmit={handleSubmit} className="box">
                 <div className="field">
                     <label className="label">Title:</label>

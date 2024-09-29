@@ -69,7 +69,7 @@ const Profile = () => {
 
   return (
     <div className="container">
-      <h2 className="title has-text-centered is-size-4 box has-background-light">
+      <h2 className="title has-text-centered is-size-4 box has-background-light has-text-black">
         {Auth.loggedIn() ? `${userData.username}'s Saved Recipes` : 'Log in to see saved recipes'}
       </h2>
   
@@ -108,7 +108,7 @@ const Profile = () => {
         </div>
       )}
 
-      <h2 className="title has-text-centered is-size-4 box has-background-light">
+      <h2 className="title has-text-centered is-size-4 box has-background-light has-text-black">
         {Auth.loggedIn() ? `${userData.username}'s Secret Recipes` : 'Log in to see saved recipes'}
       </h2>
       
