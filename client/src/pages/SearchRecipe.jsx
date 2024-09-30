@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useMutation } from "@apollo/client"; // Import Apollo Client's useMutation
-import { SAVE_RECIPE } from "../utils/mutations"; // Import the SAVE_RECIPE mutation
+import { useMutation , useQuery } from "@apollo/client"; // Import Apollo Client's useMutation
+import { SAVE_RECIPE  } from "../utils/mutations"; 
+import { GET_ME } from "../utils/queries";
 import Auth from "../utils/auth";
 import { searchSpoonacular } from "../utils/API";
 
@@ -11,14 +12,15 @@ const SearchRecipes = (props) => {
   const [savedRecipeIds, setSavedRecipeIds] = useState([]);
 
   const [saveRecipe] = useMutation(SAVE_RECIPE); // Use the SAVE_RECIPE mutation
-
+  const { loading, data } = useQuery(GET_ME); // Use the GET_ME query
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
     if (!searchInput) {
       return false;
     }
-
+    console.log(data);
+    setSavedRecipeIds(data?.me.savedRecipes.map((recipe) => recipe.recipeId) || []);
     try {
       const response = await searchSpoonacular(searchInput);
 
