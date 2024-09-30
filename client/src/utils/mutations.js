@@ -128,3 +128,44 @@ export const LOGIN_USER = gql`
 `;
 
 
+export const REMOVE_INGREDIENT = gql`
+  mutation removeIngredient($ingredientId: ID!) {
+    removeIngredient(ingredientId: $ingredientId) {
+      _id
+      name
+      unit
+      quantity
+    }
+  }
+`;
+
+export const REMOVE_INSTRUCTION = gql`
+  mutation removeInstruction($instructionId: ID!) {
+    removeInstruction(instructionId: $instructionId) {
+      _id
+      step
+      text
+    }
+  }
+`;
+
+export const UPDATE_INGREDIENT = gql`
+  mutation updateIngredient($ingredientId: ID!, $name: String!, $unit: String!, $quantity: Float!) {
+    updateIngredient(ingredientId: $ingredientId, name: $name, unit: $unit, quantity: $quantity) {
+      _id
+      name
+      unit
+      quantity
+    }
+  }
+`;
+
+export const UPDATE_INSTRUCTION = gql`
+  mutation updateInstruction($instructionId: ID!, $text: String!, $step: String!) {
+    updateInstruction(instructionId: $instructionId, text: $text, step: $step) {
+      _id
+      text
+      step
+    }
+  }
+`;

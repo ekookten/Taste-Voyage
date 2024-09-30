@@ -221,6 +221,26 @@ removeSecretRecipe: async (parent, { recipeId }, context) => {
       }
       throw AuthenticationError;
     },
+    removeIngredient: async (parent, { ingredientId }) => {
+      return Ingredient.findOneAndDelete({ _id: ingredientId });
+    },
+    removeInstruction: async (parent, { instructionId }) => {
+      return Instruction.findOneAndDelete({ _id: instructionId });
+    },
+    updateIngredient: async (parent, { ingredientId, name, unit, quantity }) => {
+      return Ingredient.findOneAndUpdate(
+        { _id: ingredientId },
+        { name, unit, quantity },
+        { new: true }
+      );
+    },
+    updateInstruction: async (parent, { instructionId, text, step }) => {
+      return Instruction.findOneAndUpdate(
+        { _id: instructionId },
+        { text, step },
+        { new: true }
+      );
+    },
   },
 };
 

@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import { ADD_SECRET_RECIPE, ADD_INGREDIENT, ADD_INSTRUCTION } from '../../utils/mutations'; // Import the ADD_INSTRUCTION mutation
+import { ADD_SECRET_RECIPE, ADD_INGREDIENT, ADD_INSTRUCTION, REMOVE_INGREDIENT, REMOVE_INSTRUCTION, UPDATE_INGREDIENT, UPDATE_INSTRUCTION } from '../../utils/mutations'; // Import the ADD_INSTRUCTION mutation
 import Auth from '../../utils/auth';
 import decode from 'jwt-decode';
-;
+import UpdateIngredient from '../UpdateIngredient';
+
 
 const AddRecipe = () => {
     const navigate = useNavigate();
     const [addSecretRecipe] = useMutation(ADD_SECRET_RECIPE);
     const [addIngredient] = useMutation(ADD_INGREDIENT);
-    const [addInstruction] = useMutation(ADD_INSTRUCTION); // Mutation for adding instructions
+    const [addInstruction] = useMutation(ADD_INSTRUCTION); 
+    const [removeIngredient] = useMutation(REMOVE_INGREDIENT);
+    const [removeInstruction] = useMutation(REMOVE_INSTRUCTION);
+    
+    const [updateInstruction] = useMutation(UPDATE_INSTRUCTION);// Mutation for adding instructions
 
     const loggedIn = Auth.loggedIn();
     let username = '';
@@ -111,6 +116,31 @@ const AddRecipe = () => {
         setShowInstructionInput(true);
     };
 
+    const handleRemoveIngredient = async (e) => {
+        const ingredientId = e.target.parentElement.getAttribute('data-id');
+        try {
+            await removeIngredient({ variables: { ingredientId } });
+            setIngredients(ingredients.filter((ingredient) => ingredient._id !== ingredientId));
+        } catch (error) {
+            console.error("Error removing ingredient:", error);
+        }
+    };
+
+    const handleRemoveInstruction = async (e) => {
+        const instructionId = e.target.parentElement.getAttribute('data-id');
+        try {
+            await removeInstruction({ variables: { instructionId } });
+            setInstructions(instructions.filter((instruction) => instruction._id !== instructionId));
+        } catch (error) {
+            console.error("Error removing instruction:", error);
+        }
+    };
+
+    const handleUpdateIngredient = async (e) => {
+    };
+    const handleUpdateInstruction = async (e) => {
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
     
@@ -182,7 +212,12 @@ const AddRecipe = () => {
                     <label className="label">Ingredients:</label>
                     <ul>
                         {ingredients.map((ingredient, index) => (
-                            <li key={index}>{ingredient.name}, {ingredient.unit}, {ingredient.quantity}</li>
+                            <li key={index} data-id={ingredient._id}> 
+                        <UpdateIngredient ingredient={ingredient} ingredients={ingredients} setIngredients={setIngredients}/>
+                        {<button type="button" 
+                                    className="button is-link"
+                                    onClick={handleRemoveIngredient}>Remove</button>}
+                        </li>
                         ))}
                     </ul>
                     {!showIngredientInput ? (
@@ -242,7 +277,14 @@ const AddRecipe = () => {
                     <label className="label">Instructions:</label>
                     <ul>
                         {instructions.map((instruction, index) => (
-                            <li key={index}>Step {instruction.step}: {instruction.text}</li>
+                            <li key={index} data-id={instruction._id}>Step {instruction.step}: {instruction.text}
+                            <button type="button" 
+                                    className="button is-link" 
+                                    onClick={handleUpdateInstruction}>Edit</button>
+                            <button type="button" 
+                                    className="button is-link" 
+                                    onClick={handleRemoveInstruction}>Remove</button>
+                            </li>
                         ))}
                     </ul>
                     {!showInstructionInput ? (

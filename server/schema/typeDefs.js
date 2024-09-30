@@ -83,9 +83,11 @@ const typeDefs = `
     step: String!
     text: String!
   }
-type Query {
-  getSecretRecipe(recipeId: ID!): SecretRecipe
-}
+
+  type Query {
+    getSecretRecipe(recipeId: ID!): SecretRecipe
+  }
+
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
@@ -97,6 +99,10 @@ type Query {
     removeRecipe(recipeId: ID!): User
     removeSecretRecipe(recipeId: ID!): User
     removeComment(recipeId: ID!, commentId: ID!): Recipe
+    removeIngredient(ingredientId: ID!): Ingredient
+    removeInstruction(instructionId: ID!): Instruction
+    updateIngredient(ingredientId: ID!, name: String!, unit: String!, quantity: Float!): Ingredient
+    updateInstruction(instructionId: ID!, text: String!, step: String!): Instruction
   }
 `;
 
