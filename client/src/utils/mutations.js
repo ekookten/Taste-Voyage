@@ -112,6 +112,19 @@ export const ADD_USER = gql`
     }
   }
 `;
+export const ADD_COMMENT = gql`
+  mutation AddComment($commentData: commentInput!) {
+    addComment(commentData: $commentData) {
+      _id
+      comments {
+        _id
+        commentText
+        commentAuthor
+        createdAt
+      }
+    }
+  }
+`;
 
 // Mutation to log in an existing user
 export const LOGIN_USER = gql`

@@ -149,14 +149,12 @@ const AddRecipe = () => {
     }
   };
 
-  const handleUpdateIngredient = async (e) => {};
-  const handleUpdateInstruction = async (e) => {};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (ingredients.length === 0) {
-      alert("Please add at least one ingredient.");
+    if (ingredients.length === 0 || instructions.length === 0) {
+      alert("Please complete the form.");
       return;
     }
 
