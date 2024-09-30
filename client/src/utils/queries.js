@@ -28,6 +28,34 @@ export const GET_ME = gql`
   }
   
 `;
+
+export const GET_USERS = gql`
+  query users {
+    users {
+      _id
+      username
+      secretRecipes {
+        _id
+        title
+        username
+        image
+        ingredients {
+          unit
+          name
+          quantity
+          _id
+          
+        }
+        instructions {
+          step
+          text
+          _id
+        }
+      }
+    }
+  }
+  `;
+
 export const GET_SECRET_RECIPE = gql`
   query getSecretRecipe($recipeId: ID!) {
     getSecretRecipe(recipeId: $recipeId) {

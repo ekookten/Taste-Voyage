@@ -44,6 +44,7 @@ const typeDefs = `
     recipes(username: String): [Recipe]
     recipe(recipeId: ID!): Recipe
     me: User
+    users: [User]
   }
 
   type Ingredient {
