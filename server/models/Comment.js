@@ -1,3 +1,4 @@
+const dateFormat = require('../utils/dateFormat');
 const { Schema, model } = require('mongoose');
 
 
@@ -20,6 +21,6 @@ const CommentSchema = new Schema({
 });
 
 
-const Comment = model('comment', CommentSchema);
+const Comment = model('Comment', CommentSchema);
 
 module.exports = Comment;

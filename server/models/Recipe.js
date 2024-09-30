@@ -1,5 +1,4 @@
 const { Schema, model } = require('mongoose');
-const dateFormat = require('../utils/dateFormat');
 const recipeSchema = new Schema({
   authors: [
     {
@@ -29,7 +28,13 @@ const recipeSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Instruction',
     },
-  ]
+  ],
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Comment',
+    },
+  ],
 });
 
 const Recipe = model('Recipe', recipeSchema);

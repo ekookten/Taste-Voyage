@@ -115,37 +115,9 @@ const resolvers = {
       return { token, user };
     },
 
-     addComment: async (parent, { recipeId, commentData }, context) => {
-      if (!context.user) {
-        throw new AuthenticationError("You need to be logged in to add a comment!");
-      }
-    
-      try {
-        // Create the comment
-        const comment = await Comment.create({
-          commentText: commentData.commentText,
-          commentAuthor: context.user.username, // Use username from the context
-          createdAt: commentData.createdAt,
-        });
-    
-        // Update the secret recipe with the new comment
-        await SecretRecipe.findByIdAndUpdate(
-          recipeId, // Update the recipe by its ID
-          { $addToSet: { comments: comment._id } }, // Add the comment's ID to the recipe's comments array
-          { new: true } // Return the updated recipe
-        );
-    
-        // Optionally, populate the comments if needed (not strictly necessary here)
-        const updatedRecipe = await SecretRecipe.findById(recipeId)
-          .populate("ingredients")
-          .populate("instructions")
-          .populate("comments"); // Populate comments if you want the full comment objects
-    
-        return updatedRecipe; // Return the updated recipe with all details
-      } catch (error) {
-        console.error("Error adding comment:", error);
-        throw new Error("Could not add the comment. Please try again.");
-      }
+     addComment:  async (_, { commentText, commentAuthor, createdAt }) => {
+      const newComment = await Comment.create({ commentText, commentAuthor, createdAt });
+      return newComment;
     },
     
     addSecretRecipe: async (parent, { secretRecipeData }, context) => {
