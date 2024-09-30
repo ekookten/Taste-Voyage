@@ -1,46 +1,43 @@
-import { gql , useMutation} from "@apollo/client";
-
-
+import { gql, useMutation } from "@apollo/client";
 
 export const ADD_SECRET_RECIPE = gql`
-mutation addSecretRecipe($secretRecipeData: secretRecipeInput!) {
-  addSecretRecipe(secretRecipeData: $secretRecipeData) { 
-    _id
-    title
-    username
-    ingredients {
+  mutation addSecretRecipe($secretRecipeData: secretRecipeInput!) {
+    addSecretRecipe(secretRecipeData: $secretRecipeData) {
       _id
-      name
-      unit
-      quantity
-    } 
-    instructions {
-      _id
-      text
-      step
+      title
+      username
+      ingredients {
+        _id
+        name
+        unit
+        quantity
+      }
+      instructions {
+        _id
+        text
+        step
+      }
     }
   }
-}
 `;
 export const REMOVE_SECRET_RECIPE = gql`
   mutation removeSecretRecipe($recipeId: ID!) {
     removeSecretRecipe(recipeId: $recipeId) {
       _id
-         username
-         secretRecipes{
-            _id
-            title
-            image
-            instructions{
-                text
-                step
-            }
-            ingredients{
-                name
-                unit
-                quantity
-            }
-      
+      username
+      secretRecipes {
+        _id
+        title
+        image
+        instructions {
+          text
+          step
+        }
+        ingredients {
+          name
+          unit
+          quantity
+        }
       }
     }
   }
@@ -51,7 +48,7 @@ export const REMOVE_RECIPE = gql`
       _id
       username
       savedRecipes {
-      _id
+        _id
         title
         image
         recipeId
@@ -61,23 +58,23 @@ export const REMOVE_RECIPE = gql`
 `;
 
 export const ADD_INGREDIENT = gql`
-    mutation addIngredient($name: String!, $unit: String!, $quantity: Float!) {
-        addIngredient(name: $name, unit: $unit, quantity: $quantity) {
-            _id
-            name
-            unit
-            quantity
-        }
+  mutation addIngredient($name: String!, $unit: String!, $quantity: Float!) {
+    addIngredient(name: $name, unit: $unit, quantity: $quantity) {
+      _id
+      name
+      unit
+      quantity
     }
+  }
 `;
 export const ADD_INSTRUCTION = gql`
-    mutation addInstruction($step: String!, $text: String!) {
-        addInstruction(step: $step, text: $text) {
-            _id
-            step
-            text
-        }
+  mutation addInstruction($step: String!, $text: String!) {
+    addInstruction(step: $step, text: $text) {
+      _id
+      step
+      text
     }
+  }
 `;
 // Mutation to save a recipe for the logged-in user
 export const SAVE_RECIPE = gql`
@@ -97,8 +94,6 @@ export const SAVE_RECIPE = gql`
 
 // Mutation to remove a recipe from the saved list
 
-
-
 // Mutation to add a new user
 export const ADD_USER = gql`
   mutation addUser($username: String!, $email: String!, $password: String!) {
@@ -113,15 +108,20 @@ export const ADD_USER = gql`
   }
 `;
 export const ADD_COMMENT = gql`
-  mutation AddComment($commentData: commentInput!) {
-    addComment(commentData: $commentData) {
+  mutation addComment(
+    $commentText: String!
+    $commentAuthor: String
+    $createdAt: String
+  ) {
+    addComment(
+      commentText: $commentText
+      commentAuthor: $commentAuthor
+      createdAt: $createdAt
+    ) {
       _id
-      comments {
-        _id
-        commentText
-        commentAuthor
-        createdAt
-      }
+      commentText
+      commentAuthor
+      createdAt
     }
   }
 `;
@@ -139,7 +139,6 @@ export const LOGIN_USER = gql`
     }
   }
 `;
-
 
 export const REMOVE_INGREDIENT = gql`
   mutation removeIngredient($ingredientId: ID!) {
@@ -163,8 +162,18 @@ export const REMOVE_INSTRUCTION = gql`
 `;
 
 export const UPDATE_INGREDIENT = gql`
-  mutation updateIngredient($ingredientId: ID!, $name: String!, $unit: String!, $quantity: Float!) {
-    updateIngredient(ingredientId: $ingredientId, name: $name, unit: $unit, quantity: $quantity) {
+  mutation updateIngredient(
+    $ingredientId: ID!
+    $name: String!
+    $unit: String!
+    $quantity: Float!
+  ) {
+    updateIngredient(
+      ingredientId: $ingredientId
+      name: $name
+      unit: $unit
+      quantity: $quantity
+    ) {
       _id
       name
       unit
@@ -174,7 +183,11 @@ export const UPDATE_INGREDIENT = gql`
 `;
 
 export const UPDATE_INSTRUCTION = gql`
-  mutation updateInstruction($instructionId: ID!, $text: String!, $step: String!) {
+  mutation updateInstruction(
+    $instructionId: ID!
+    $text: String!
+    $step: String!
+  ) {
     updateInstruction(instructionId: $instructionId, text: $text, step: $step) {
       _id
       text

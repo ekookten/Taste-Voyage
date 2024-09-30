@@ -30,7 +30,7 @@ const typeDefs = `
 
   type Comment {
     _id: ID
-    commentText: String
+    commentText: String!
     commentAuthor: String
     createdAt: String
   }
@@ -46,7 +46,6 @@ const typeDefs = `
     recipe(recipeId: ID!): Recipe
     me: User
     users: [User]
-    comments(recipeId: ID!): [Comment]
     getSecretRecipe(recipeId: ID!): SecretRecipe
 
   }
@@ -98,7 +97,7 @@ input commentInput {
     login(email: String!, password: String!): Auth
     saveRecipe(recipeData: recipeInput!): User
     addSecretRecipe(secretRecipeData: secretRecipeInput!): SecretRecipe
-    addComment(commentData: commentInput!): SecretRecipe
+    addComment(commentText: String!, commentAuthor: String, createdAt: String ): Comment
     addIngredient(name: String!, unit: String!, quantity: Float!): Ingredient
     addInstruction(text: String!, step: String!): Instruction
     removeRecipe(recipeId: ID!): User
