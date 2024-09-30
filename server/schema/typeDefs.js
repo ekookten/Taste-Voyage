@@ -25,6 +25,7 @@ const typeDefs = `
     ingredients: [Ingredient]
     instructions: [Instruction]
     image: String
+    comments: [Comment]
   }
 
   type Comment {
@@ -45,6 +46,9 @@ const typeDefs = `
     recipe(recipeId: ID!): Recipe
     me: User
     users: [User]
+    comments(recipeId: ID!): [Comment]
+    getSecretRecipe(recipeId: ID!): SecretRecipe
+
   }
 
   type Ingredient {
@@ -84,17 +88,17 @@ const typeDefs = `
     step: String!
     text: String!
   }
-
-  type Query {
-    getSecretRecipe(recipeId: ID!): SecretRecipe
-  }
+input commentInput { 
+    commentText: String!
+    createdAt: String!
+}
 
   type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     saveRecipe(recipeData: recipeInput!): User
     addSecretRecipe(secretRecipeData: secretRecipeInput!): SecretRecipe
-    addComment(recipeId: ID!, commentText: String!): Recipe
+    addComment(commentData: commentInput!): SecretRecipe
     addIngredient(name: String!, unit: String!, quantity: Float!): Ingredient
     addInstruction(text: String!, step: String!): Instruction
     removeRecipe(recipeId: ID!): User
