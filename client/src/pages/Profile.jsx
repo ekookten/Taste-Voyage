@@ -33,7 +33,7 @@ const Profile = () => {
         variables: { recipeId },
         refetchQueries: [{ query: GET_ME }]
       });
-      console.log(recipeId)
+      
       setSavedRecipes((prevRecipes) =>
         prevRecipes.filter((recipe) => recipe._id !== recipeId)
       );
@@ -49,7 +49,7 @@ const Profile = () => {
         variables: { recipeId },
         refetchQueries: [{ query: GET_ME }]
       });
-      console.log(recipeId)
+      
       setSecretRecipes((prevRecipes) =>
         prevRecipes.filter((recipe) => recipe._id !== recipeId)
       );

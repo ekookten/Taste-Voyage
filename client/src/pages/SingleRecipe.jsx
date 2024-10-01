@@ -18,8 +18,8 @@ const SingleRecipe = () => {
         const instructionsData  = await searchSpoonacularInstructions(recipeId);
 
         // Update the state with fetched data
-      console.log(recipeData)
-        console.log(instructionsData[0].steps);
+      
+       
         setRecipe(recipeData);
         setInstructions(instructionsData[0].steps || []);
         setIngredients(recipeData.extendedIngredients || []);

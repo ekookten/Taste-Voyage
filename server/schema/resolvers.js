@@ -116,9 +116,9 @@ const resolvers = {
       return { token, user };
     },
 
-    addComment: async (parent, { recipeId, commentText, commentAuthor }) => {
+    addComment: async (parent, { recipeId, commentText, commentAuthor , createdAt }) => {
       // Create the new comment
-      const newComment = await Comment.create({ commentText, commentAuthor });
+      const newComment = await Comment.create({ recipeId, commentText, commentAuthor, createdAt });
 
       // Update the secret recipe by pushing the new comment's ID into the comments array
       const updatedRecipe = await SecretRecipe.findByIdAndUpdate(

@@ -11,7 +11,7 @@ const AppNavbar = () => {
     const token = Auth.getToken();
     const decodedToken = decode(token);
     
-    console.log('Decoded token:', decodedToken);  // Log the decoded token to inspect its structure
+    
     
     // Check if username exists in the decoded token
     username = decodedToken.username || decodedToken.data?.username || '';  // Handle cases where username might be nested

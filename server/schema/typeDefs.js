@@ -30,6 +30,7 @@ const typeDefs = `
 
   type Comment {
     _id: ID
+    recipeId: ID!
     commentText: String!
     commentAuthor: String
     createdAt: String
