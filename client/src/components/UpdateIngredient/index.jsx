@@ -46,49 +46,59 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
         <>
             {showForm ? (
                 <div className="field has-addons">
-                    <div className="control is-expanded">
-                        <input
-                            className="input"
-                            type="text"
-                            value={newIngredientName}
-                            onChange={(e) => setNewIngredientName(e.target.value)}
-                            placeholder="Name"
-                        />
-                    </div>
-
-                    <div className="control is-expanded">
-                        <input
-                            className="input"
-                            type="text"
-                            value={newIngredientQuantity}
-                            onChange={(e) => setNewIngredientQuantity(e.target.value)}
-                            placeholder="Quantity"
-                        />
-                    </div>
-                    <div className="control is-expanded">
-                        <input
-                            className="input"
-                            type="text"
-                            value={newIngredientUnit}
-                            onChange={(e) => setNewIngredientUnit(e.target.value)}
-                            placeholder="Unit"
-                        />
-                    </div>
-                    <div className="control">
-                        <button
-                            type="button"
-                            className="button is-link"
-                            onClick={handleUpdateIngredient}
-                        >
-                            Save
-                        </button>
-                    </div>
+                <div className="control is-expanded">
+                  <input
+                    className="input"
+                    type="text"
+                    value={newIngredientName}
+                    onChange={(e) => setNewIngredientName(e.target.value)}
+                    placeholder="Name"
+                  />
                 </div>
+              
+                <div className="control is-expanded">
+                  <input
+                    className="input"
+                    type="text"
+                    value={newIngredientQuantity}
+                    onChange={(e) => setNewIngredientQuantity(e.target.value)}
+                    placeholder="Quantity"
+                  />
+                </div>
+                
+                <div className="control is-expanded">
+                  <input
+                    className="input"
+                    type="text"
+                    value={newIngredientUnit}
+                    onChange={(e) => setNewIngredientUnit(e.target.value)}
+                    placeholder="Unit"
+                  />
+                </div>
+              <>
+                <div className="control">
+                  <button
+                    type="button"
+                    className="button is-small is-link"
+                    onClick={handleUpdateIngredient}
+                  >
+                    Save
+                  </button>
+                </div>
+                </>
+              </div>
             ) : (
                 <>
-                <p>{ingredient.name}, {ingredient.quantity} {ingredient.unit}</p>
+                <p style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '0',
+                    width: '100%',
+                    paddingLeft: '10px',
+                    }}>{ingredient.name}, {ingredient.quantity} {ingredient.unit}</p>
                 <button type="button"
-                    className="button is-link"
+                    className="button is-small is-link ml-2"
                     onClick={handleShowIngredientInput}>Edit
                 </button>
                 </>
