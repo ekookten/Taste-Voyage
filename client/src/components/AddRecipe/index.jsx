@@ -7,9 +7,7 @@ import {
     ADD_INSTRUCTION,
     REMOVE_INGREDIENT,
     REMOVE_INSTRUCTION,
-    UPDATE_INGREDIENT,
-    UPDATE_INSTRUCTION,
-} from "../../utils/mutations"; // Import the ADD_INSTRUCTION mutation
+} from "../../utils/mutations";
 import Auth from "../../utils/auth";
 import decode from "jwt-decode";
 import UpdateIngredient from "../UpdateIngredient";
@@ -22,8 +20,6 @@ const AddRecipe = () => {
     const [addInstruction] = useMutation(ADD_INSTRUCTION);
     const [removeIngredient] = useMutation(REMOVE_INGREDIENT);
     const [removeInstruction] = useMutation(REMOVE_INSTRUCTION);
-
-    const [updateInstruction] = useMutation(UPDATE_INSTRUCTION); // Mutation for adding instructions
 
     const loggedIn = Auth.loggedIn();
     let username = "";
@@ -47,6 +43,8 @@ const AddRecipe = () => {
     const [newInstruction, setNewInstruction] = useState("");
     const [showInstructionInput, setShowInstructionInput] = useState(false);
     const [image, setImage] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -60,15 +58,13 @@ const AddRecipe = () => {
     };
 
     const handleAddIngredient = async () => {
-        if (
-            newIngredientName.trim() !== "" && // Ensure the name is not empty
-            newIngredientUnit.trim() !== "" &&
-            newIngredientQuantity.trim() !== ""
-        ) {
+        if (newIngredientName.trim() && newIngredientUnit.trim() && newIngredientQuantity.trim()) {
             try {
+                const capitalizedIngredientName = newIngredientName.charAt(0).toUpperCase() + newIngredientName.slice(1);
+
                 const { data } = await addIngredient({
                     variables: {
-                        name: newIngredientName.trim(),
+                        name: capitalizedIngredientName,
                         unit: newIngredientUnit.trim(),
                         quantity: parseFloat(newIngredientQuantity.trim()),
                     },
@@ -78,7 +74,6 @@ const AddRecipe = () => {
                     setIngredients([...ingredients, data.addIngredient]);
                 }
 
-                // Reset input fields
                 setNewIngredientName("");
                 setNewIngredientUnit("");
                 setNewIngredientQuantity("");
@@ -91,18 +86,15 @@ const AddRecipe = () => {
         }
     };
 
-    const handleShowIngredientInput = () => {
-        setShowIngredientInput(true);
-    };
-
     const handleAddInstruction = async () => {
-        if (newInstruction.trim() !== "") {
-            // Ensure the instruction text is not empty
+        if (newInstruction.trim()) {
             try {
+                const capitalizedInstruction = newInstruction.charAt(0).toUpperCase() + newInstruction.slice(1);
                 const stepNumber = instructions.length + 1;
+
                 const { data } = await addInstruction({
                     variables: {
-                        text: newInstruction.trim(),
+                        text: capitalizedInstruction,
                         step: stepNumber.toString(),
                     },
                 });
@@ -121,17 +113,11 @@ const AddRecipe = () => {
         }
     };
 
-    const handleShowInstructionInput = () => {
-        setShowInstructionInput(true);
-    };
-
     const handleRemoveIngredient = async (e) => {
         const ingredientId = e.target.parentElement.getAttribute("data-id");
         try {
             await removeIngredient({ variables: { ingredientId } });
-            setIngredients(
-                ingredients.filter((ingredient) => ingredient._id !== ingredientId)
-            );
+            setIngredients(ingredients.filter((ingredient) => ingredient._id !== ingredientId));
         } catch (error) {
             console.error("Error removing ingredient:", error);
         }
@@ -141,14 +127,11 @@ const AddRecipe = () => {
         const instructionId = e.target.parentElement.getAttribute("data-id");
         try {
             await removeInstruction({ variables: { instructionId } });
-            setInstructions(
-                instructions.filter((instruction) => instruction._id !== instructionId)
-            );
+            setInstructions(instructions.filter((instruction) => instruction._id !== instructionId));
         } catch (error) {
             console.error("Error removing instruction:", error);
         }
     };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -159,13 +142,12 @@ const AddRecipe = () => {
         }
 
         try {
-            // Set a default image if none is provided
-            const defaultImage =
-                "https://static.vecteezy.com/system/resources/previews/005/292/398/non_2x/cute-sushi-roll-character-confused-free-vector.jpg";
+            const defaultImage = "https://static.vecteezy.com/system/resources/previews/005/292/398/non_2x/cute-sushi-roll-character-confused-free-vector.jpg";
             const recipeImage = image || defaultImage;
+            const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
 
             const secretRecipeData = {
-                title,
+                title: capitalizedTitle,
                 ingredients: ingredients.map((ingredient) => ({
                     name: ingredient.name,
                     unit: ingredient.unit,
@@ -178,12 +160,8 @@ const AddRecipe = () => {
                 image: recipeImage,
             };
 
-            // Add the secret recipe (make sure your mutation handles the ID)
-            await addSecretRecipe({
-                variables: { secretRecipeData },
-            });
+            await addSecretRecipe({ variables: { secretRecipeData } });
 
-            // Clear the form after submission
             setTitle("");
             setIngredients([]);
             setNewIngredientName("");
@@ -193,18 +171,33 @@ const AddRecipe = () => {
             setNewInstruction("");
             setImage(null);
 
-            alert("Your Secret Recipe has been added!");
-            navigate(`/me`);
+            // Show success modal
+            setModalMessage("Your Secret Recipe was created successfully!");
+            setIsModalOpen(true);
+
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                setIsModalOpen(false);
+                navigate(`/me`);
+            }, 1000);
         } catch (error) {
             console.error("Error adding recipe:", error);
         }
     };
 
     return (
-        <div
-            className="container box has-background-light"
-            style={{ width: "50%", margin: "0 auto" }}
-        >
+        <div className="container box has-background-light" style={{ width: "50%", margin: "0 auto" }}>
+            {isModalOpen && (
+                <div className="modal is-active">
+                    <div className="modal-background" onClick={() => setIsModalOpen(false)}></div>
+                    <div className="modal-content">
+                        <div className="box has-text-centered">
+                            <h2 className="title">{modalMessage}</h2>
+                        </div>
+                    </div>
+                    <button className="modal-close is-large" aria-label="close" onClick={() => setIsModalOpen(false)}></button>
+                </div>
+            )}
             <h1 className="title is-3 has-text-centered box has-background-light has-text-black">
                 Add Your Secret Recipe
             </h1>
@@ -226,21 +219,7 @@ const AddRecipe = () => {
                     <label className="label">Ingredients:</label>
                     <ol>
                         {ingredients.map((ingredient, index) => (
-                            <li
-                                key={index}
-                                data-id={ingredient._id}
-                                className="has-border is-flex is-align-items-center"
-                                style={{
-                                    border: '0.5px solid white',
-                                    borderRadius: '4px',
-                                    padding: '5px',
-                                    height: '40px', // Set a fixed height for uniformity
-                                    marginBottom: '5px', // Space between items
-                                    display: 'flex', // Ensures flex behavior
-                                    alignItems: 'center', // Vertically centers the content
-                                    justifyContent: 'space-between' // Aligns items to the start (left)
-                                }}>
-
+                            <li key={index} data-id={ingredient._id} className="has-border is-flex is-align-items-center" style={{ border: '0.5px solid white', borderRadius: '4px', padding: '5px', height: '40px', marginBottom: '5px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
                                     <UpdateIngredient
                                         ingredient={ingredient}
@@ -248,11 +227,7 @@ const AddRecipe = () => {
                                         setIngredients={setIngredients}
                                     />
                                 </div>
-                                <button
-                                    type="button"
-                                    className="button is-small is-link ml-2"
-                                    onClick={handleRemoveIngredient}
-                                >
+                                <button type="button" className="button is-small is-link ml-2" onClick={handleRemoveIngredient}>
                                     Remove
                                 </button>
                             </li>
@@ -260,119 +235,72 @@ const AddRecipe = () => {
                     </ol>
                     {!showIngredientInput ? (
                         <div className="control">
-                            <button
-                                type="button"
-                                className="button is-link"
-                                onClick={handleShowIngredientInput}
-                            >
+                            <button type="button" className="button is-link" onClick={() => setShowIngredientInput(true)}>
                                 Add Ingredient
                             </button>
                         </div>
                     ) : (
                         <div className="field has-addons">
                             <div className="control is-expanded">
-                                <input
-                                    className="input"
-                                    type="text"
-                                    value={newIngredientName}
-                                    onChange={(e) => setNewIngredientName(e.target.value)}
-                                    placeholder="Name"
-                                />
+                                <input className="input" type="text" value={newIngredientName} onChange={(e) => setNewIngredientName(e.target.value)} placeholder="Name" />
                             </div>
 
                             <div className="control is-expanded">
-                                <input
-                                    className="input"
-                                    type="text"
-                                    value={newIngredientQuantity}
-                                    onChange={(e) => setNewIngredientQuantity(e.target.value)}
-                                    placeholder="Quantity"
-                                />
+                                <input className="input" type="text" value={newIngredientQuantity} onChange={(e) => setNewIngredientQuantity(e.target.value)} placeholder="Quantity" />
                             </div>
+
                             <div className="control is-expanded">
-                                <input
-                                    className="input"
-                                    type="text"
-                                    value={newIngredientUnit}
-                                    onChange={(e) => setNewIngredientUnit(e.target.value)}
-                                    placeholder="Unit"
-                                />
+                                <input className="input" type="text" value={newIngredientUnit} onChange={(e) => setNewIngredientUnit(e.target.value)} placeholder="Unit" />
                             </div>
+
                             <div className="control">
-                                <button
-                                    type="button"
-                                    className="button is-link"
-                                    onClick={handleAddIngredient}
-                                >
-                                    Save
+                                <button type="button" className="button is-link" onClick={handleAddIngredient}>
+                                    Submit
+                                </button>
+                                <button type="button" className="button is-text" onClick={() => setShowIngredientInput(false)}>
+                                    Cancel
                                 </button>
                             </div>
                         </div>
                     )}
                 </div>
 
-
                 <div className="field">
                     <label className="label">Instructions:</label>
-                    <ul>
+                    <ol>
                         {instructions.map((instruction, index) => (
-                            <li key={index} data-id={instruction._id}
-                                className="is-flex is-align-items-center"
-                                style={{
-                                    border: '0.5px solid white',
-                                    borderRadius: '4px',
-                                    padding: '5px',
-                                    height: '40px', // Set a fixed height for uniformity
-                                    marginBottom: '5px', // Space between items
-                                    display: 'flex', // Ensures flex behavior
-                                    alignItems: 'center', // Vertically centers the content
-                                    justifyContent: 'space-between' // Aligns items to the start (left)
-                                }}>
-
-                                <UpdateInstruction
-                                    instruction={instruction}
-                                    instructions={instructions}
-                                    setInstructions={setInstructions}
-                                    index={index}
-                                />
-                                <button
-                                    type="button"
-                                    className="button is-small is-link ml-2"
-                                    onClick={handleRemoveInstruction}
-                                >
+                            <li key={index} data-id={instruction._id} className="has-border is-flex is-align-items-center" style={{ border: '0.5px solid white', borderRadius: '4px', padding: '5px', height: '40px', marginBottom: '5px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+                                    <UpdateInstruction
+                                        instruction={instruction}
+                                        instructions={instructions}
+                                        setInstructions={setInstructions}
+                                    />
+                                </div>
+                                <button type="button" className="button is-small is-link ml-2" onClick={handleRemoveInstruction}>
                                     Remove
                                 </button>
                             </li>
                         ))}
-                    </ul>
+                    </ol>
                     {!showInstructionInput ? (
                         <div className="control">
-                            <button
-                                type="button"
-                                className="button is-link"
-                                onClick={handleShowInstructionInput}
-                            >
+                            <button type="button" className="button is-link" onClick={() => setShowInstructionInput(true)}>
                                 Add Instruction
                             </button>
                         </div>
                     ) : (
                         <div className="field has-addons">
                             <div className="control is-expanded">
-                                <input
-                                    className="input"
-                                    type="text"
-                                    value={newInstruction}
-                                    onChange={(e) => setNewInstruction(e.target.value)}
-                                    placeholder="New Instruction"
-                                />
+                                <input className="input" type="text" value={newInstruction} onChange={(e) => setNewInstruction(e.target.value)} placeholder="Instruction" />
                             </div>
+
                             <div className="control">
-                                <button
-                                    type="button"
-                                    className="button is-link"
-                                    onClick={handleAddInstruction}
-                                >
-                                    Save
+                                <button type="button" className="button is-link" onClick={handleAddInstruction}>
+                                    Submit
+                                </button>
+                                <button type="button" className="button is-text" onClick={() => setShowInstructionInput(false)}>
+                                    Cancel
                                 </button>
                             </div>
                         </div>
@@ -382,24 +310,22 @@ const AddRecipe = () => {
                 <div className="field">
                     <label className="label">Image:</label>
                     <div className="control">
-                        <input type="file" onChange={handleImageChange} />
+                        <input className="input" type="file" onChange={handleImageChange} />
                     </div>
                 </div>
 
                 <div className="field has-text-centered">
                     <div className="control">
-                        <button
-                            className="button is-primary"
-                            style={{ width: "40%", margin: "0 auto" }}
-                            type="submit"
-                        >
+                        <button className="button is-primary" style={{ width: "40%", margin: "0 auto" }} type="submit">
                             Add Recipe
                         </button>
                     </div>
                 </div>
 
                 <div className="author-info">
-                    <h2 className="subtitle has-text-centered"><strong className="is-6">Creator:</strong> {author}</h2>
+                    <h2 className="subtitle has-text-centered">
+                        <strong className="is-6">Creator:</strong> {author}
+                    </h2>
                 </div>
             </form>
         </div>
