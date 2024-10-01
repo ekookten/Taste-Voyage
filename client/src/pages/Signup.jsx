@@ -10,10 +10,39 @@ function Signup() {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    if (formState.password !== formState.confirmPassword) {
-      setNotification({ message: 'Passwords do not match', type: 'is-danger' });
+
+    // Check for username length
+    if (formState.username.length < 3) {
+      setNotification({ message: 'Username must be at least 3 characters long.', type: 'is-danger' });
       return;
     }
+
+    // Check for valid email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation
+    if (!formState.email.includes('@')) {
+      setNotification({ message: 'Please enter a valid email (e.g., example@email.com).', type: 'is-danger' });
+      return;
+    } else if (formState.email.endsWith('@')) {
+      setNotification({ message: 'Please enter a domain (e.g., .com, .edu, .org) after "@" in your email.', type: 'is-danger' });
+      return;
+    } else if (!emailRegex.test(formState.email)) {
+      setNotification({ message: 'Please enter a valid email (e.g., example@email.com).', type: 'is-danger' });
+      return;
+    }
+
+    // Check for password length and special character
+    const passwordRegex = /^(?=.*[!@#$%^&*])/; // at least one special character
+    if (formState.password.length < 8 && !passwordRegex.test(formState.password)) {
+      setNotification({ message: 'Password must be at least 8 characters long and contain at least one special character (!@#$%^&*).', type: 'is-danger' });
+      return;
+    }
+   
+    // Check for password match
+    if (formState.password !== formState.confirmPassword) {
+      setNotification({ message: 'Passwords do not match.', type: 'is-danger' });
+      return;
+    }
+
     try {
       const { data } = await addUser({
         variables: { username: formState.username, email: formState.email, password: formState.password },
