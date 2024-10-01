@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { ADD_COMMENT } from "../../utils/mutations";
 import Auth from "../../utils/auth";
 import decode from "jwt-decode"; // Make sure to import decode if you're using it.
+import { GET_SECRET_RECIPE } from "../../utils/queries";
 
-const CommentForm = () => {
+const CommentForm = ({ recipeId }) => {
   const navigate = useNavigate();
   const [addComment, { error }] = useMutation(ADD_COMMENT);
   const loggedIn = Auth.loggedIn();
@@ -32,13 +33,17 @@ const CommentForm = () => {
       try {
         const { data } = await addComment({
           variables: {
+            recipeId: recipeId,
             commentText: addedText,
-            commentAuthor: user || "Guest", // Use the username if available
+            commentAuthor: user || "Guest",
+            // createdAt: createdAt // Use the username if available
           },
+          refetchQueries: [{ query: GET_SECRET_RECIPE, variables: { recipeId } }]
         });
 
         if (data && data.addComment) {
-          setComments([...comments, data.addComment]); // Fix here: change comment to comments
+          setComments([...comments, data.addComment]);
+          
         }
 
         // Reset input fields
@@ -55,12 +60,12 @@ const CommentForm = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label className="label">Your Name</label>
-          <div>{user ? `Commenter: ${user}` : "Commenter: Guest"}</div>
+          <label className="label has-text-black">Your Name</label>
+          <div className="has-text-black">{user ? `Commenter: ${user}` : "Commenter: Guest"}</div>
         </div>
 
         <div className="field">
-          <label className="label">Your Comment</label>
+          <label className="label has-text-black">Your Comment</label>
           <div className="control">
             <input
               className="input"

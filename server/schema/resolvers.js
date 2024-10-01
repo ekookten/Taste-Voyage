@@ -23,12 +23,12 @@ const resolvers = {
           path : 'ingredients',
         }
       })
-      .populate({
-        path : 'secretRecipes',
-        populate : {
-          path : 'comments',
-        }
-      })
+      // .populate({
+      //   path : 'secretRecipes',
+      //   populate : {
+      //     path : 'comments',
+      //   }
+      // })
 
       .populate({
         path : 'secretRecipes',
@@ -46,7 +46,8 @@ const resolvers = {
     getSecretRecipe: async (parent, { recipeId }, context) => {
       const recipe = await SecretRecipe.findById(recipeId)
         .populate("ingredients") // Populates the ingredient details
-        .populate("instructions"); // Populates the instruction details
+        .populate("instructions") // Populates the instruction details
+        .populate("comments"); 
 
       if (!recipe) {
         throw new Error("Recipe not found");
@@ -115,8 +116,21 @@ const resolvers = {
       return { token, user };
     },
 
-     addComment:  async (_, { commentText, commentAuthor, createdAt }) => {
-      const newComment = await Comment.create({ commentText, commentAuthor, createdAt });
+    addComment: async (parent, { recipeId, commentText, commentAuthor }) => {
+      // Create the new comment
+      const newComment = await Comment.create({ commentText, commentAuthor });
+
+      // Update the secret recipe by pushing the new comment's ID into the comments array
+      const updatedRecipe = await SecretRecipe.findByIdAndUpdate(
+        recipeId,
+        { $push: { comments: newComment._id } },
+        { new: true, runValidators: true }
+      ).populate('comments');
+
+      if (!updatedRecipe) {
+        throw new Error('Secret recipe not found.');
+      }
+
       return newComment;
     },
     

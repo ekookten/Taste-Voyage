@@ -97,7 +97,7 @@ input commentInput {
     login(email: String!, password: String!): Auth
     saveRecipe(recipeData: recipeInput!): User
     addSecretRecipe(secretRecipeData: secretRecipeInput!): SecretRecipe
-    addComment(commentText: String!, commentAuthor: String, createdAt: String ): Comment
+    addComment(recipeId: ID!, commentText: String!, commentAuthor: String, createdAt: String ): Comment
     addIngredient(name: String!, unit: String!, quantity: Float!): Ingredient
     addInstruction(text: String!, step: String!): Instruction
     removeRecipe(recipeId: ID!): User

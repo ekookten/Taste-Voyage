@@ -2,8 +2,8 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_SECRET_RECIPE } from "../utils/queries";
 import CommentForm from "../components/CommentForm";
-import Auth from "../utils/auth"; // Ensure you're importing Auth here
-import decode from 'jwt-decode'; // Import jwt-decode to decode the token
+import Auth from "../utils/auth"; 
+import decode from 'jwt-decode'; 
 
 const SingleSecretRecipe = () => {
   const { recipeId } = useParams(); // Extract recipeId from URL parameters
@@ -35,7 +35,7 @@ const SingleSecretRecipe = () => {
         className="box has-background-light"
         style={{ borderRadius: "8px", padding: "5px", marginBottom: "20px" }}
       >
-        <h1 className="title is-2 has-text-centered">
+        <h1 className="title is-2 has-text-centered has-text-black">
           {recipe.title || "No Title Available"}
         </h1>
       </div>
@@ -89,12 +89,12 @@ const SingleSecretRecipe = () => {
           padding: "20px",
         }}
       >
-        <h2 className="title is-4">Ingredients</h2>
+        <h2 className="title is-4 has-text-black">Ingredients</h2>
         <ul>
           {recipe.ingredients.length > 0 ? (
             recipe.ingredients.map((ingredient, index) => (
-              <li key={index}>
-                <strong>{ingredient.name}</strong>: {ingredient.quantity}{" "}
+              <li className="has-text-black" key={index}>
+                <strong className="has-text-black">{ingredient.name}</strong>: {ingredient.quantity}{" "}
                 {ingredient.unit}
               </li>
             ))
@@ -113,12 +113,12 @@ const SingleSecretRecipe = () => {
           padding: "20px",
         }}
       >
-        <h2 className="title is-4">Instructions</h2>
+        <h2 className="title is-4 has-text-black">Instructions</h2>
         <ol>
           {recipe.instructions.length > 0 ? (
             recipe.instructions.map((step, index) => (
-              <li key={index}>
-                <strong>Step {step.step}:</strong> {step.text}
+              <li className="has-text-black" key={index}>
+                <strong className="has-text-black">Step {step.step}:</strong> {step.text}
               </li>
             ))
           ) : (
@@ -128,21 +128,38 @@ const SingleSecretRecipe = () => {
       </div>
 
       {/* Comment Form */}
-      <div className="box mt-5" style={{ backgroundColor: "#f9f9f9", borderRadius: "8px", padding: "20px" }}>
-        <h2 className="title is-4">Add a Comment</h2>
-        {/* Render the CommentForm and pass the recipeId and username */}
-        <CommentForm recipeId={recipe._id} username={username} />
+      <div
+        className="box mt-5"
+        style={{
+          backgroundColor: "#f9f9f9",
+          borderRadius: "8px",
+          padding: "20px",
+        }}
+      >
+        <h2 className="title is-4 has-text-black">Add a Comment</h2>
+        {/* Pass recipeId and username to CommentForm */}
+        <CommentForm recipeId={recipeId} username={username} />
       </div>
 
       {/* Comments Section */}
-      <div className="box mt-5" style={{ backgroundColor: "#f9f9f9", borderRadius: "8px", padding: "20px" }}>
-        <h2 className="title is-4">Comments</h2>
+      <div
+        className="box mt-5"
+        style={{
+          backgroundColor: "#f9f9f9",
+          borderRadius: "8px",
+          padding: "20px",
+        }}
+      >
+        <h2 className="title is-4 has-text-black">Comments</h2>
         {recipe.comments.length > 0 ? (
           <ul>
             {recipe.comments.map((comment) => (
-              <li key={comment._id}>
-                <strong>{comment.commentAuthor}</strong>: {comment.commentText} <br />
-                <small>Posted on {new Date(comment.createdAt).toLocaleString()}</small>
+              <li className="has-text-black" key={comment._id}>
+                <strong className="has-text-black">{comment.commentAuthor}</strong>: {comment.commentText}{" "}
+                <br />
+                <small>
+                  Posted on {new Date(comment.createdAt).toLocaleString()}
+                </small>
               </li>
             ))}
           </ul>

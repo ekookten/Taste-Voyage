@@ -109,11 +109,13 @@ export const ADD_USER = gql`
 `;
 export const ADD_COMMENT = gql`
   mutation addComment(
+    $recipeId: ID!
     $commentText: String!
     $commentAuthor: String
     $createdAt: String
   ) {
     addComment(
+      recipeId: $recipeId
       commentText: $commentText
       commentAuthor: $commentAuthor
       createdAt: $createdAt
