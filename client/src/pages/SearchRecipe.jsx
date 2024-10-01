@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useMutation , useQuery } from "@apollo/client"; // Import Apollo Client's useMutation
-import { SAVE_RECIPE  } from "../utils/mutations"; 
+import { useMutation, useQuery } from "@apollo/client"; // Import Apollo Client's useMutation
+import { SAVE_RECIPE } from "../utils/mutations"; 
 import { GET_ME } from "../utils/queries";
 import Auth from "../utils/auth";
 import { searchSpoonacular } from "../utils/API";
@@ -13,6 +13,7 @@ const SearchRecipes = (props) => {
 
   const [saveRecipe] = useMutation(SAVE_RECIPE); // Use the SAVE_RECIPE mutation
   const { loading, data } = useQuery(GET_ME); // Use the GET_ME query
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -21,6 +22,7 @@ const SearchRecipes = (props) => {
     }
    
     setSavedRecipeIds(data?.me.savedRecipes.map((recipe) => recipe.recipeId) || []);
+    
     try {
       const response = await searchSpoonacular(searchInput);
 
@@ -47,18 +49,18 @@ const SearchRecipes = (props) => {
     const recipeToSave = searchedRecipes.find(
       (recipe) => recipe.recipeId === recipeId
     );
-  
+
     if (!recipeToSave) {
       console.error('Recipe not found for the given recipeId');
       return;
     }
-  
+
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-  
+
     if (!token) {
       return false;
     }
-  
+
     try {
       const { data } = await saveRecipe({
         variables: { 
@@ -74,7 +76,7 @@ const SearchRecipes = (props) => {
           },
         },
       });
-  
+
       if (data) {
         setSavedRecipeIds([...savedRecipeIds, recipeToSave.recipeId]);
       }
@@ -88,7 +90,7 @@ const SearchRecipes = (props) => {
     <>
       <div className="has-background-dark has-text-light p-5">
         <div className="container">
-          <h1 className="title has-text-light">Search for Recipes!</h1>
+          <h1 className="title has-text-light has-text-centered">Search for Recipes!</h1> {/* Centered header */}
           <form onSubmit={handleFormSubmit}>
             <div className="columns is-vcentered">
               <div className="column is-8">
@@ -117,16 +119,16 @@ const SearchRecipes = (props) => {
       </div>
   
       <div className="container">
-        <h2 className="title pt-5">
+        <h2 className="title pt-5 has-text-centered"> {/* Centered results title */}
           {searchedRecipes.length
             ? `Viewing ${searchedRecipes.length} results:`
             : "Search for a recipe to begin"}
         </h2>
-        <div className="columns is-multiline">
+        <div className="columns is-multiline is-centered">
           {searchedRecipes.map((recipe) => {
             return (
-              <div className="column is-one-quarter" key={recipe.recipeId}>
-                <div className="card" style={{ maxWidth: '250px' }}> 
+              <div className="column is-one-quarter-desktop is-half-tablet is-full-mobile" key={recipe.recipeId}>
+                <div className="card" style={{ maxWidth: '250px', margin: '0 auto' }}>
                   {recipe.image && (
                     <div className="card-image">
                       <figure className="image is-4by3">
