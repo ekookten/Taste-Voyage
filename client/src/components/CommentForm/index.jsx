@@ -15,7 +15,7 @@ const CommentForm = ({ recipeId }) => {
   if (loggedIn) {
     const token = Auth.getToken();
     const decodedToken = decode(token);
-    console.log("decodedToken", decodedToken);
+    
     user = decodedToken.username || decodedToken.data?.username || "";
   } else {
     navigate("/login");
@@ -27,8 +27,7 @@ const CommentForm = ({ recipeId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const addedText = newCommentText.trim();
-    console.log("addedText", addedText);
-    console.log("typeof addedText", typeof addedText);
+ 
     if (addedText !== "") {
       try {
         const { data } = await addComment({
@@ -36,11 +35,13 @@ const CommentForm = ({ recipeId }) => {
             recipeId: recipeId,
             commentText: addedText,
             commentAuthor: user || "Guest",
-            // createdAt: createdAt // Use the username if available
+            createdAt: "2023-09-30T12:34:56Z",   
           },
+          
           refetchQueries: [{ query: GET_SECRET_RECIPE, variables: { recipeId } }]
         });
-
+        console.log("Response data:", data);
+        console.log(data.createdAt);
         if (data && data.addComment) {
           setComments([...comments, data.addComment]);
           

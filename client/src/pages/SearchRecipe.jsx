@@ -19,7 +19,7 @@ const SearchRecipes = (props) => {
     if (!searchInput) {
       return false;
     }
-    console.log(data);
+   
     setSavedRecipeIds(data?.me.savedRecipes.map((recipe) => recipe.recipeId) || []);
     try {
       const response = await searchSpoonacular(searchInput);
@@ -78,7 +78,7 @@ const SearchRecipes = (props) => {
       if (data) {
         setSavedRecipeIds([...savedRecipeIds, recipeToSave.recipeId]);
       }
-      console.log(recipeToSave.recipeId);
+      
     } catch (err) {
       console.error(err);
     }

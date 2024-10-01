@@ -5,6 +5,7 @@ import CommentForm from "../components/CommentForm";
 import Auth from "../utils/auth"; 
 import decode from 'jwt-decode'; 
 
+
 const SingleSecretRecipe = () => {
   const { recipeId } = useParams(); // Extract recipeId from URL parameters
 
@@ -27,7 +28,18 @@ const SingleSecretRecipe = () => {
     const decodedToken = decode(token);
     username = decodedToken.username; // Extract the username from the decoded token
   }
-
+ 
+    const formatDate = (timestamp) => {
+      const date = new Date(Number(timestamp)); // Convert the string to a number
+      return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      });
+    };
   return (
     <div className="container mt-5">
       {/* Display the recipe title */}
@@ -158,7 +170,7 @@ const SingleSecretRecipe = () => {
                 <strong className="has-text-black">{comment.commentAuthor}</strong>: {comment.commentText}{" "}
                 <br />
                 <small>
-                  Posted on {new Date(comment.createdAt).toLocaleString()}
+                  Posted on  {formatDate(comment.createdAt)}
                 </small>
               </li>
             ))}
