@@ -139,8 +139,8 @@ const SingleSecretRecipe = () => {
         </ol>
       </div>
 
-      {/* Comment Form */}
-      <div className="container is-flex is-justify-content-center mt-5">
+{/* Comment Form */}
+<div className="container is-flex is-justify-content-center mt-5">
         <div
           className="box"
           style={{
@@ -150,58 +150,57 @@ const SingleSecretRecipe = () => {
             padding: "20px",
           }}
         >
-          <h2 className="title is-4 has-text-black">Add a Comment</h2>
+          <h2 className="title is-4 has-text-centered has-text-black">Add a Comment</h2>
           {/* Pass recipeId and username to CommentForm */}
           <CommentForm recipeId={recipeId} username={username} />
         </div>
       </div>
 
       <div className="container is-flex is-justify-content-center mt-5">
-  {/* Comments Section */}
-  <div
-    className="box"
-    style={{
-      width: "80%", // Increased width
-      backgroundColor: "#f9f9f9",
-      borderRadius: "8px",
-      padding: "20px",
-    }}
-  >
-    <h2 className="title is-4 has-text-black">Comments</h2>
-    {recipe.comments.length > 0 ? (
-      <ul style={{ listStyleType: "none", padding: "0" }}>
-        {recipe.comments.map((comment) => (
-          <li
-            className="has-text-black"
-            key={comment._id}
-            style={{
-              borderBottom: "1px solid #e0e0e0", // Add a bottom border for separation
-              padding: "10px 0", // Add padding for better spacing
-              marginBottom: "10px", // Space between comments
-              overflowWrap: "break-word", // Break long words
-              wordBreak: "break-word", // Break words if they are too long
-            }}
-          >
-            <strong className="has-text-black">
-              {comment.commentAuthor}
-            </strong>
-            <br />
-            <span style={{ marginLeft: "5px" }}>
-              {comment.commentText}
-            </span>
-            <br />
-            <small style={{ color: "#7a7a7a" }}>
-              Posted on {formatDate(comment.createdAt)}
-            </small>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p>No comments yet. Be the first to comment!</p>
-    )}
-  </div>
-</div>
-
+        {/* Comments Section */}
+        <div
+          className="box"
+          style={{
+            width: "80%", // Increased width
+            backgroundColor: "#f9f9f9",
+            borderRadius: "8px",
+            padding: "20px",
+          }}
+        >
+          <h2 className="title is-4 has-text-centered has-text-black">Comments</h2>
+          {recipe.comments.length > 0 ? (
+            <ul style={{ listStyleType: "none", padding: "0" }}>
+              {recipe.comments.map((comment) => (
+                <li
+                  className="has-text-black"
+                  key={comment._id}
+                  style={{
+                    borderBottom: "1px solid #e0e0e0", // Add a bottom border for separation
+                    padding: "10px 0", // Add padding for better spacing
+                    marginBottom: "10px", // Space between comments
+                    overflowWrap: "break-word", // Break long words
+                    wordBreak: "break-word", // Break words if they are too long
+                  }}
+                >
+                  <strong className="has-text-black">
+                    {comment.commentAuthor}
+                  </strong>
+                  <br />
+                  <span style={{ marginLeft: "5px" }}>
+                    {comment.commentText}
+                  </span>
+                  <br />
+                  <small style={{ color: "#7a7a7a" }}>
+                    Posted on {formatDate(comment.createdAt)}
+                  </small>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No comments yet. Be the first to comment!</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
