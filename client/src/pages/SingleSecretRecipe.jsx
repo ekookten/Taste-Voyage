@@ -2,9 +2,8 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_SECRET_RECIPE } from "../utils/queries";
 import CommentForm from "../components/CommentForm";
-import Auth from "../utils/auth"; 
-import decode from 'jwt-decode'; 
-
+import Auth from "../utils/auth";
+import decode from "jwt-decode";
 
 const SingleSecretRecipe = () => {
   const { recipeId } = useParams(); // Extract recipeId from URL parameters
@@ -28,18 +27,18 @@ const SingleSecretRecipe = () => {
     const decodedToken = decode(token);
     username = decodedToken.username; // Extract the username from the decoded token
   }
- 
-    const formatDate = (timestamp) => {
-      const date = new Date(Number(timestamp)); // Convert the string to a number
-      return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      });
-    };
+
+  const formatDate = (timestamp) => {
+    const date = new Date(Number(timestamp)); // Convert the string to a number
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
   return (
     <div className="container mt-5">
       {/* Display the recipe title */}
@@ -106,8 +105,8 @@ const SingleSecretRecipe = () => {
           {recipe.ingredients.length > 0 ? (
             recipe.ingredients.map((ingredient, index) => (
               <li className="has-text-black" key={index}>
-                <strong className="has-text-black">{ingredient.name}</strong>: {ingredient.quantity}{" "}
-                {ingredient.unit}
+                <strong className="has-text-black">{ingredient.name}</strong>:{" "}
+                {ingredient.quantity} {ingredient.unit}
               </li>
             ))
           ) : (
@@ -130,7 +129,8 @@ const SingleSecretRecipe = () => {
           {recipe.instructions.length > 0 ? (
             recipe.instructions.map((step, index) => (
               <li className="has-text-black" key={index}>
-                <strong className="has-text-black">Step {step.step}:</strong> {step.text}
+                <strong className="has-text-black">Step {step.step}:</strong>{" "}
+                {step.text}
               </li>
             ))
           ) : (
@@ -140,45 +140,68 @@ const SingleSecretRecipe = () => {
       </div>
 
       {/* Comment Form */}
-      <div
-        className="box mt-5"
-        style={{
-          backgroundColor: "#f9f9f9",
-          borderRadius: "8px",
-          padding: "20px",
-        }}
-      >
-        <h2 className="title is-4 has-text-black">Add a Comment</h2>
-        {/* Pass recipeId and username to CommentForm */}
-        <CommentForm recipeId={recipeId} username={username} />
+      <div className="container is-flex is-justify-content-center mt-5">
+        <div
+          className="box"
+          style={{
+            width: "80%", // Increased width
+            backgroundColor: "#f9f9f9",
+            borderRadius: "8px",
+            padding: "20px",
+          }}
+        >
+          <h2 className="title is-4 has-text-black">Add a Comment</h2>
+          {/* Pass recipeId and username to CommentForm */}
+          <CommentForm recipeId={recipeId} username={username} />
+        </div>
       </div>
 
-      {/* Comments Section */}
-      <div
-        className="box mt-5"
-        style={{
-          backgroundColor: "#f9f9f9",
-          borderRadius: "8px",
-          padding: "20px",
-        }}
-      >
-        <h2 className="title is-4 has-text-black">Comments</h2>
-        {recipe.comments.length > 0 ? (
-          <ul>
-            {recipe.comments.map((comment) => (
-              <li className="has-text-black" key={comment._id}>
-                <strong className="has-text-black">{comment.commentAuthor}</strong>: {comment.commentText}{" "}
-                <br />
-                <small>
-                  Posted on  {formatDate(comment.createdAt)}
-                </small>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No comments yet. Be the first to comment!</p>
-        )}
-      </div>
+      <div className="container is-flex is-justify-content-center mt-5">
+  {/* Comments Section */}
+  <div
+    className="box"
+    style={{
+      width: "80%", // Increased width
+      backgroundColor: "#f9f9f9",
+      borderRadius: "8px",
+      padding: "20px",
+    }}
+  >
+    <h2 className="title is-4 has-text-black">Comments</h2>
+    {recipe.comments.length > 0 ? (
+      <ul style={{ listStyleType: "none", padding: "0" }}>
+        {recipe.comments.map((comment) => (
+          <li
+            className="has-text-black"
+            key={comment._id}
+            style={{
+              borderBottom: "1px solid #e0e0e0", // Add a bottom border for separation
+              padding: "10px 0", // Add padding for better spacing
+              marginBottom: "10px", // Space between comments
+              overflowWrap: "break-word", // Break long words
+              wordBreak: "break-word", // Break words if they are too long
+            }}
+          >
+            <strong className="has-text-black">
+              {comment.commentAuthor}
+            </strong>
+            <br />
+            <span style={{ marginLeft: "5px" }}>
+              {comment.commentText}
+            </span>
+            <br />
+            <small style={{ color: "#7a7a7a" }}>
+              Posted on {formatDate(comment.createdAt)}
+            </small>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>No comments yet. Be the first to comment!</p>
+    )}
+  </div>
+</div>
+
     </div>
   );
 };
