@@ -33,13 +33,13 @@ const AppNavbar = () => {
           </div>
           <div id="navbarMenu" className="navbar-menu">
             <div className="navbar-end">
-              <Link to='/search' className="button is-light">Search for Recipes</Link>
+              <Link to='/search' className="button is-light ml-2">Search for Recipes</Link>
               {loggedIn ? (
                 <>
-                <Link to={`/secret-recipes`} className="button is-light">Secret Recipes</Link>
-                  <Link to={`/me`} className="button is-light">My Profile</Link>
+                <Link to={`/secret-recipes`} className="button is-light ml-2">Secret Recipes</Link>
+                  <Link to={`/me`} className="button is-light ml-2">My Profile</Link>
                     <button onClick={() => Auth.logout()} className="button is-light ml-2">Logout</button>
-                  <span className="navbar-item">Welcome,<strong className='has-text-light'>{username.toUpperCase()}</strong></span>
+                  <span className="navbar-item ml-2 is-size-5">Welcome,<strong className='has-text-light'>{username.toUpperCase()}</strong></span>
                 </>
               ) : (
                 <>

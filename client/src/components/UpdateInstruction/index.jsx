@@ -57,7 +57,7 @@ function UpdateInstruction({
           <div className="control">
             <button
               type="button"
-              className="button is-link"
+              className="button is-small is-link"
               onClick={handleUpdateInstruction}
             >
               Save
@@ -66,16 +66,24 @@ function UpdateInstruction({
         </div>
       ) : (
         <>
-          <p>
-            Step {index + 1}: {instruction.text}
-          </p>
-          <button
-            type="button"
-            className="button is-link"
-            onClick={handleShowInstructionInput}
-          >
-            Edit
-          </button>
+            <p style={{ 
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '0',
+              width: '100%',
+              paddingLeft: '10px',
+              }}>
+              Step {index + 1}: {instruction.text}
+            </p>
+            <button
+              type="button"
+              className="button is-small is-link ml-2"
+              onClick={handleShowInstructionInput}
+            >
+              Edit
+            </button>
+          
         </>
       )}
     </>
