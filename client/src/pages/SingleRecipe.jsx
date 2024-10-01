@@ -39,7 +39,7 @@ const SingleRecipe = () => {
     <div className="container mt-5">
       {/* Display the recipe title */}
       <div className="box has-background-light" style={{ borderRadius: '8px', padding: '10px', marginBottom: '20px' }}>
-        <h1 className="title is-2 has-text-centered">{recipe.title || "No Title Available"}</h1>
+        <h1 className="title is-2 has-text-centered has-text-black">{recipe.title || "No Title Available"}</h1>
       </div>
   
       {/* Display the recipe image */}
@@ -59,30 +59,30 @@ const SingleRecipe = () => {
   
       {/* Ingredients Section */}
       <div className="box mt-5" style={{ backgroundColor: '#f9f9f9', borderRadius: '8px', padding: '20px' }}>
-        <h2 className="title is-4">Ingredients</h2>
+        <h2 className="title is-4 has-text-black">Ingredients</h2>
         <ul>
           {ingredients.length > 0 ? (
             ingredients.map((ingredient, index) => (
-              <li key={index}>
-                <strong>{ingredient.name}</strong>: {ingredient.amount} {ingredient.unit}
+              <li className="has-text-black" key={index}>
+                <strong className="has-text-black">{ingredient.name}</strong>: {ingredient.amount} {ingredient.unit}
               </li>
             ))
           ) : (
-            <li>No ingredients available for this recipe.</li>
+            <li className="has-text-black">No ingredients available for this recipe.</li>
           )}
         </ul>
       </div>
   
       {/* Instructions Section */}
       <div className="box mt-5" style={{ backgroundColor: '#f9f9f9', borderRadius: '8px', padding: '20px' }}>
-        <h2 className="title is-4">Instructions</h2>
+        <h2 className="title is-4 has-text-black">Instructions</h2>
         <ol>
           {instructions.length > 0 ? (
             instructions.map((step, index) => (
-              <li key={index}>Step {index + 1}: {step.step}</li>
+              <li className="has-text-black" key={index}>Step {index + 1}: {step.step}</li>
             ))
           ) : (
-            <li>No instructions available for this recipe.</li>
+            <li className="has-text-black">No instructions available for this recipe.</li>
           )}
         </ol>
       </div>
