@@ -48,36 +48,40 @@ function UpdateInstruction({
   return (
     <>
       {showForm ? (
-        <div className="field has-addons">
-          <div className="control is-expanded">
-            <input
-              className="input"
-              type="text"
-              value={newInstruction}
-              onChange={(e) => setNewInstruction(e.target.value)} // Update state on input change
-              placeholder="New Instruction"
-            />
+        <form onSubmit={handleUpdateInstruction}>
+          <div className="field has-addons">
+            <div className="control is-expanded">
+              <input
+                className="input is-fullwidth"
+                type="text"
+                value={newInstruction}
+                onChange={(e) => setNewInstruction(e.target.value)} // Update state on input change
+                placeholder="New Instruction"
+                required
+              />
+            </div>
+            <div className="control">
+              <button
+                type="submit" // Use submit type to allow form submission with Enter key
+                className="button is-small is-link"
+              >
+                Save
+              </button>
+            </div>
           </div>
-          <div className="control">
-            <button
-              type="button"
-              className="button is-small is-link"
-              onClick={handleUpdateInstruction} // Call the update function on button click
-            >
-              Save
-            </button>
-          </div>
-        </div>
+        </form>
       ) : (
         <>
-          <p style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '0',
-            width: '100%',
-            paddingLeft: '10px',
-          }}>
+          <p
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '0',
+              width: '100%',
+              paddingLeft: '10px',
+            }}
+          >
             Step {instruction.step}: {instruction.text} {/* Display current instruction */}
           </p>
           <button
