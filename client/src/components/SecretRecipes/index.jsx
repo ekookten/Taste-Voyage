@@ -13,14 +13,14 @@ const SecretRecipes = () => {
 
   return (
     <div className="container">
-      <h1 className="title has-text-centered">Secret Recipes</h1>
+      <h1 className="title has-text-centered mt-2">Secret Recipes</h1>
       {users.map((user) => (
         user.secretRecipes.length > 0 && (
           <div key={user._id}>
             <h2 className="title has-text-centered is-size-4 box has-background-light has-text-black">
               {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
             </h2>
-            <div className="columns is-multiline">
+            <div className="columns is-multiline mt-2 mb-2">
               {user.secretRecipes.map((recipe) => (
                 <div className="column is-one-third" key={recipe._id}>
                   <div className="card" style={{ maxWidth: '300px', margin: '0 auto' }}>
