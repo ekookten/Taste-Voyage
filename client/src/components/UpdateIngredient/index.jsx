@@ -1,9 +1,10 @@
 import React, { useState } from 'react'; 
-import { UPDATE_INGREDIENT } from '../../utils/mutations'; 
+import { UPDATE_INGREDIENT, DELETE_INGREDIENT } from '../../utils/mutations'; 
 import { useMutation } from '@apollo/client'; 
 
 function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
     const [updateIngredient] = useMutation(UPDATE_INGREDIENT); 
+    const [deleteIngredient] = useMutation(DELETE_INGREDIENT); // Hook for deleting ingredients
     const [newIngredientName, setNewIngredientName] = useState(ingredient.name);
     const [newIngredientUnit, setNewIngredientUnit] = useState(ingredient.unit);
     const [newIngredientQuantity, setNewIngredientQuantity] = useState(ingredient.quantity);
@@ -40,15 +41,28 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
         }
     };
 
+    const handleDeleteIngredient = async () => {
+        try {
+            await deleteIngredient({
+                variables: { ingredientId: ingredient._id }, // ID of the ingredient to delete
+            });
+
+            const updatedIngredients = ingredients.filter(i => i._id !== ingredient._id);
+            setIngredients(updatedIngredients); // Update the ingredients state
+        } catch (err) {
+            console.error(err); // Log any errors
+        }
+    };
+
     const handleShowIngredientInput = () => {
         setShowForm(true);
     };
 
     return (
-        <>
+        <div className="box">
             {showForm ? (
                 <form onSubmit={handleUpdateIngredient}>
-                    <div className="field is-grouped is-grouped-multiline">
+                    <div className="field has-addons">
                         <div className="control is-expanded">
                             <input
                                 className="input is-fullwidth"
@@ -82,7 +96,7 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
                         <div className="control">
                             <button
                                 type="submit"
-                                className="button is-small is-link is-fullwidth"
+                                className="button is-small is-link"
                             >
                                 Save
                             </button>
@@ -90,26 +104,27 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
                     </div>
                 </form>
             ) : (
-                <>
-                    <p style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginBottom: '0',
-                        width: '100%',
-                        paddingLeft: '10px',
-                    }}>
+                <div className="is-flex is-justify-content-space-between align-items-center">
+                    <p className="is-marginless">
                         {ingredient.name}, {ingredient.quantity} {ingredient.unit}
                     </p>
-                    <button type="button"
-                        className="button is-small is-link ml-2"
-                        onClick={handleShowIngredientInput}
-                    >
-                        Edit
-                    </button>
-                </>
+                    <div>
+                        <button type="button"
+                            className="button is-small is-link ml-2"
+                            onClick={handleShowIngredientInput}
+                        >
+                            Edit
+                        </button>
+                        <button type="button"
+                            className="button is-small is-danger ml-2"
+                            onClick={handleDeleteIngredient} // Call delete function on click
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
             )}
-        </>
+        </div>
     );
 }
 
