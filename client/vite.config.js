@@ -9,10 +9,11 @@ export default defineConfig({
     open: true,
     proxy: {
       '/graphql': {
-        target: 'http://localhost:4001',
+        target: 'https://taste-voyage.onrender.com',
         changeOrigin: true,
         secure: false,
       }
     }
   }
 })
+
