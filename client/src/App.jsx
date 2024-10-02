@@ -35,11 +35,11 @@ const App = () => {
     // Provide the Apollo Client to the entire app
     <ApolloProvider client={client}>
       <div className="app-container">
-        <Navbar /> // Render the navigation bar
+        <Navbar /> 
         <div className="content">
-          <Outlet /> // Render the nested routes here
+          <Outlet /> 
         </div>
-        <Footer /> // Render the footer
+        <Footer /> 
       </div>
     </ApolloProvider>
   );
