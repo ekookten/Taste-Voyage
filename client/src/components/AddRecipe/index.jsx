@@ -211,150 +211,151 @@ const AddRecipe = () => {
     };
 
     return (
-        <div className="container box has-background-light" style={{ width: "50%", margin: "0 auto" }}>
-            {isModalOpen && (
-                <div className="modal is-active">
-                    <div className="modal-background" onClick={() => setIsModalOpen(false)}></div>
-                    <div className="modal-content">
-                        <div className="box has-text-centered">
-                            <h2 className="title">{modalMessage}</h2>
-                        </div>
-                    </div>
-                    <button className="modal-close is-large" aria-label="close" onClick={() => setIsModalOpen(false)}></button>
-                </div>
-            )}
-            <h1 className="title is-3 has-text-centered box has-background-light has-text-black">
-                Add Your Secret Recipe
-            </h1>
-            <form onSubmit={handleSubmit} className="box">
-                <div className="field">
-                    <label className="label">Title:</label>
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)} // Update title state on input change
-                            required
-                        />
+    <div className="container box has-background-light" style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>
+        {isModalOpen && (
+            <div className="modal is-active">
+                <div className="modal-background" onClick={() => setIsModalOpen(false)}></div>
+                <div className="modal-content">
+                    <div className="box has-text-centered">
+                        <h2 className="title">{modalMessage}</h2>
                     </div>
                 </div>
+                <button className="modal-close is-large" aria-label="close" onClick={() => setIsModalOpen(false)}></button>
+            </div>
+        )}
+        <h1 className="title is-4 has-text-centered box has-background-light has-text-black">
+            Add Your Secret Recipe
+        </h1>
+        <form onSubmit={handleSubmit} className="box">
+            <div className="field">
+                <label className="label">Title:</label>
+                <div className="control">
+                    <input
+                        className="input"
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)} // Update title state on input change
+                        required
+                    />
+                </div>
+            </div>
 
-                <div className="field">
-                    <label className="label">Ingredients:</label>
-                    <ol>
-                        {ingredients.map((ingredient, index) => (
-                            <li key={index} data-id={ingredient._id} className="has-border is-flex is-align-items-center" style={{ border: '0.5px solid white', borderRadius: '4px', padding: '5px', height: '40px', marginBottom: '5px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-                                    <UpdateIngredient
-                                        ingredient={ingredient}
-                                        ingredients={ingredients}
-                                        setIngredients={setIngredients}
-                                    />
-                                </div>
-                                <button type="button" className="button is-small is-link ml-2" onClick={handleRemoveIngredient}>
-                                    Remove
-                                </button>
-                            </li>
-                        ))}
-                    </ol>
-                    {!showIngredientInput ? (
-                        <div className="control">
-                            <button type="button" className="button is-link" onClick={() => setShowIngredientInput(true)}>
-                                Add Ingredient
+            <div className="field">
+                <label className="label">Ingredients:</label>
+                <ol>
+                    {ingredients.map((ingredient, index) => (
+                        <li key={index} className="has-border is-flex is-align-items-center" style={{ border: '0.5px solid white', borderRadius: '4px', padding: '5px', marginBottom: '5px' }}>
+                            <div className="flex-grow-1">
+                                <UpdateIngredient
+                                    ingredient={ingredient}
+                                    ingredients={ingredients}
+                                    setIngredients={setIngredients}
+                                />
+                            </div>
+                            <button type="button" className="button is-small is-link ml-2" onClick={handleRemoveIngredient}>
+                                Remove
                             </button>
-                        </div>
-                    ) : (
-                        <div className="field has-addons">
-                            <div className="control is-expanded">
-                                <input className="input" type="text" value={newIngredientName} onChange={(e) => setNewIngredientName(e.target.value)} placeholder="Name" />
-                            </div>
-
-                            <div className="control is-expanded">
-                                <input className="input" type="text" value={newIngredientQuantity} onChange={(e) => setNewIngredientQuantity(e.target.value)} placeholder="Quantity" />
-                            </div>
-
-                            <div className="control is-expanded">
-                                <input className="input" type="text" value={newIngredientUnit} onChange={(e) => setNewIngredientUnit(e.target.value)} placeholder="Unit" />
-                            </div>
-
-                            <div className="control">
-                                <button type="button" className="button is-link" onClick={handleAddIngredient}>
-                                    Submit
-                                </button>
-                                <button type="button" className="button is-text" onClick={() => setShowIngredientInput(false)}>
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                <div className="field">
-                    <label className="label">Instructions:</label>
-                    <ol>
-                        {instructions.map((instruction, index) => (
-                            <li key={index} data-id={instruction._id} className="has-border is-flex is-align-items-center" style={{ border: '0.5px solid white', borderRadius: '4px', padding: '5px', height: '40px', marginBottom: '5px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-                                    <UpdateInstruction
-                                        instruction={instruction}
-                                        instructions={instructions}
-                                        setInstructions={setInstructions}
-                                    />
-                                </div>
-                                <button type="button" className="button is-small is-link ml-2" onClick={handleRemoveInstruction}>
-                                    Remove
-                                </button>
-                            </li>
-                        ))}
-                    </ol>
-                    {!showInstructionInput ? (
-                        <div className="control">
-                            <button type="button" className="button is-link" onClick={() => setShowInstructionInput(true)}>
-                                Add Instruction
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="field has-addons">
-                            <div className="control is-expanded">
-                                <input className="input" type="text" value={newInstruction} onChange={(e) => setNewInstruction(e.target.value)} placeholder="Instruction" />
-                            </div>
-
-                            <div className="control">
-                                <button type="button" className="button is-link" onClick={handleAddInstruction}>
-                                    Submit
-                                </button>
-                                <button type="button" className="button is-text" onClick={() => setShowInstructionInput(false)}>
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                <div className="field">
-                    <label className="label">Image:</label>
+                        </li>
+                    ))}
+                </ol>
+                {!showIngredientInput ? (
                     <div className="control">
-                        <input className="input" type="file" onChange={handleImageChange} /> {/* Handle image file input */}
-                    </div>
-                </div>
-
-                <div className="field has-text-centered">
-                    <div className="control">
-                        <button className="button is-primary" style={{ width: "40%", margin: "0 auto" }} type="submit">
-                            Add Recipe
+                        <button type="button" className="button is-link" onClick={() => setShowIngredientInput(true)}>
+                            Add Ingredient
                         </button>
                     </div>
-                </div>
+                ) : (
+                    <div className="field has-addons">
+                        <div className="control is-expanded">
+                            <input className="input" type="text" value={newIngredientName} onChange={(e) => setNewIngredientName(e.target.value)} placeholder="Name" />
+                        </div>
 
-                <div className="author-info">
-                    <h2 className="subtitle has-text-centered">
-                        <strong className="is-6">Creator:</strong> {author} {/* Display the recipe creator's name */}
-                    </h2>
+                        <div className="control is-expanded">
+                            <input className="input" type="text" value={newIngredientQuantity} onChange={(e) => setNewIngredientQuantity(e.target.value)} placeholder="Quantity" />
+                        </div>
+
+                        <div className="control is-expanded">
+                            <input className="input" type="text" value={newIngredientUnit} onChange={(e) => setNewIngredientUnit(e.target.value)} placeholder="Unit" />
+                        </div>
+
+                        <div className="control">
+                            <button type="button" className="button is-link" onClick={handleAddIngredient}>
+                                Submit
+                            </button>
+                            <button type="button" className="button is-text" onClick={() => setShowIngredientInput(false)}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="field">
+                <label className="label">Instructions:</label>
+                <ol>
+                    {instructions.map((instruction, index) => (
+                        <li key={index} className="has-border is-flex is-align-items-center" style={{ border: '0.5px solid white', borderRadius: '4px', padding: '5px', marginBottom: '5px' }}>
+                            <div className="flex-grow-1">
+                                <UpdateInstruction
+                                    instruction={instruction}
+                                    instructions={instructions}
+                                    setInstructions={setInstructions}
+                                />
+                            </div>
+                            <button type="button" className="button is-small is-link ml-2" onClick={handleRemoveInstruction}>
+                                Remove
+                            </button>
+                        </li>
+                    ))}
+                </ol>
+                {!showInstructionInput ? (
+                    <div className="control">
+                        <button type="button" className="button is-link" onClick={() => setShowInstructionInput(true)}>
+                            Add Instruction
+                        </button>
+                    </div>
+                ) : (
+                    <div className="field has-addons">
+                        <div className="control is-expanded">
+                            <input className="input" type="text" value={newInstruction} onChange={(e) => setNewInstruction(e.target.value)} placeholder="Instruction" />
+                        </div>
+
+                        <div className="control">
+                            <button type="button" className="button is-link" onClick={handleAddInstruction}>
+                                Submit
+                            </button>
+                            <button type="button" className="button is-text" onClick={() => setShowInstructionInput(false)}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="field">
+                <label className="label">Image:</label>
+                <div className="control">
+                    <input className="input" type="file" onChange={handleImageChange} />
                 </div>
-            </form>
-        </div>
-    );
+            </div>
+
+            <div className="field has-text-centered">
+                <div className="control">
+                    <button className="button is-primary" style={{ width: "100%", margin: "0 auto" }} type="submit">
+                        Add Recipe
+                    </button>
+                </div>
+            </div>
+
+            <div className="author-info">
+                <h2 className="subtitle has-text-centered">
+                    <strong className="is-6">Creator:</strong> {author}
+                </h2>
+            </div>
+        </form>
+    </div>
+);
+
 };
 
 export default AddRecipe;
