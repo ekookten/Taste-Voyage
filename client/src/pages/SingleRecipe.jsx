@@ -1,12 +1,13 @@
-import { searchSpoonacularById, searchSpoonacularInstructions } from "../utils/API";
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { searchSpoonacularById, searchSpoonacularInstructions } from "../utils/API"; // Import API functions for fetching recipe data
+import { useParams } from "react-router-dom"; // Import useParams to access URL parameters
+import { useState, useEffect } from "react"; // Import necessary React hooks
 
 const SingleRecipe = () => {
   const { recipeId } = useParams(); // Extract recipeId from URL parameters
   const [recipe, setRecipe] = useState(null); // State to store recipe details
   const [instructions, setInstructions] = useState([]); // State to store recipe instructions
-  const [ingredients, setIngredients] = useState([]); // State to store recipe instructions
+  const [ingredients, setIngredients] = useState([]); // State to store recipe ingredients
+
   useEffect(() => {
     // Fetch recipe details and instructions when the component mounts
     const fetchRecipeDetails = async () => {
@@ -15,22 +16,21 @@ const SingleRecipe = () => {
         const recipeData = await searchSpoonacularById(recipeId);
 
         // Fetch the recipe instructions by ID
-        const instructionsData  = await searchSpoonacularInstructions(recipeId);
+        const instructionsData = await searchSpoonacularInstructions(recipeId);
 
         // Update the state with fetched data
-      
-       
-        setRecipe(recipeData);
-        setInstructions(instructionsData[0].steps || []);
-        setIngredients(recipeData.extendedIngredients || []);
+        setRecipe(recipeData); // Set the recipe data
+        setInstructions(instructionsData[0].steps || []); // Set the instructions, default to empty array if none
+        setIngredients(recipeData.extendedIngredients || []); // Set the ingredients, default to empty array if none
       } catch (err) {
-        console.error("Error fetching recipe details:", err);
+        console.error("Error fetching recipe details:", err); // Log any errors that occur during fetching
       }
     };
 
-    fetchRecipeDetails();
-  }, [recipeId]); // Dependency array includes recipeId to re-run on ID change
+    fetchRecipeDetails(); // Call the fetch function
+  }, [recipeId]); // Dependency array includes recipeId to re-run the effect when the ID changes
 
+  // If recipe data is not yet available, display a loading message
   if (!recipe) {
     return <div>Loading...</div>; // Show loading state while fetching data
   }
@@ -88,8 +88,6 @@ const SingleRecipe = () => {
       </div>
     </div>
   );
-  
-  
 };
 
-export default SingleRecipe;
+export default SingleRecipe; // Export the SingleRecipe component

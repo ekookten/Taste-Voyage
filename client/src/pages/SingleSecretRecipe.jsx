@@ -1,35 +1,40 @@
-import { useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
-import { GET_SECRET_RECIPE } from "../utils/queries";
-import CommentForm from "../components/CommentForm";
-import Auth from "../utils/auth";
-import decode from "jwt-decode";
+import { useParams } from "react-router-dom"; // Import useParams to access URL parameters
+import { useQuery } from "@apollo/client"; // Import useQuery for GraphQL data fetching
+import { GET_SECRET_RECIPE } from "../utils/queries"; // Import the query for fetching a secret recipe
+import CommentForm from "../components/CommentForm"; // Import the comment form component
+import Auth from "../utils/auth"; // Import authentication utility
+import decode from "jwt-decode"; // Import jwt-decode for decoding JWT tokens
 
 const SingleSecretRecipe = () => {
   const { recipeId } = useParams(); // Extract recipeId from URL parameters
 
-  // Use Apollo's useQuery hook to fetch the recipe details
+  // Use Apollo's useQuery hook to fetch the recipe details based on recipeId
   const { loading, error, data } = useQuery(GET_SECRET_RECIPE, {
     variables: { recipeId },
   });
 
+  // Show loading state while fetching data
   if (loading) return <p>Loading...</p>;
+  // Handle error state
   if (error) return <p>Error: {error.message}</p>;
 
-  const recipe = data?.getSecretRecipe; // Directly fetch the populated recipe
+  // Directly access the fetched recipe from the query data
+  const recipe = data?.getSecretRecipe; 
 
+  // Check if a recipe is found
   if (!recipe) return <p>No recipe found.</p>;
 
-  // Decode the token to get the user info
-  const token = Auth.getToken();
+  // Decode the token to get user information
+  const token = Auth.getToken(); 
   let username = "";
   if (token) {
-    const decodedToken = decode(token);
+    const decodedToken = decode(token); // Decode the token to access its payload
     username = decodedToken.username; // Extract the username from the decoded token
   }
 
+  // Function to format date from timestamp
   const formatDate = (timestamp) => {
-    const date = new Date(Number(timestamp)); // Convert the string to a number
+    const date = new Date(Number(timestamp)); // Convert the string timestamp to a number
     return date.toLocaleString("en-US", {
       year: "numeric",
       month: "long",
@@ -39,6 +44,7 @@ const SingleSecretRecipe = () => {
       hour12: true,
     });
   };
+
   return (
     <div className="container mt-5">
       {/* Display the recipe title */}
@@ -51,7 +57,7 @@ const SingleSecretRecipe = () => {
         </h1>
       </div>
 
-      {/* Display the recipe image */}
+      {/* Display the recipe image if available */}
       {recipe.image && (
         <div
           className="card"
@@ -139,12 +145,12 @@ const SingleSecretRecipe = () => {
         </ol>
       </div>
 
-{/* Comment Form */}
-<div className="container is-flex is-justify-content-center mt-5">
+      {/* Comment Form */}
+      <div className="container is-flex is-justify-content-center mt-5">
         <div
           className="box"
           style={{
-            width: "80%", // Increased width
+            width: "80%", // Increased width for better layout
             backgroundColor: "#f9f9f9",
             borderRadius: "8px",
             padding: "20px",
@@ -156,12 +162,12 @@ const SingleSecretRecipe = () => {
         </div>
       </div>
 
+      {/* Comments Section */}
       <div className="container is-flex is-justify-content-center mt-5">
-        {/* Comments Section */}
         <div
           className="box"
           style={{
-            width: "80%", // Increased width
+            width: "80%", // Increased width for better layout
             backgroundColor: "#f9f9f9",
             borderRadius: "8px",
             padding: "20px",
@@ -191,7 +197,7 @@ const SingleSecretRecipe = () => {
                   </span>
                   <br />
                   <small style={{ color: "#7a7a7a" }}>
-                    Posted on {formatDate(comment.createdAt)}
+                    Posted on {formatDate(comment.createdAt)} {/* Format and display comment date */}
                   </small>
                 </li>
               ))}
@@ -205,4 +211,4 @@ const SingleSecretRecipe = () => {
   );
 };
 
-export default SingleSecretRecipe;
+export default SingleSecretRecipe; // Export the SingleSecretRecipe component

@@ -3,62 +3,65 @@ import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { ADD_COMMENT } from "../../utils/mutations";
 import Auth from "../../utils/auth";
-import decode from "jwt-decode"; // Make sure to import decode if you're using it.
-import { GET_SECRET_RECIPE } from "../../utils/queries";
+import decode from "jwt-decode"; // Import for decoding JWT tokens
+import { GET_SECRET_RECIPE } from "../../utils/queries"; // Query to fetch the updated recipe
 
 const CommentForm = ({ recipeId }) => {
   const navigate = useNavigate();
-  const [addComment, { error }] = useMutation(ADD_COMMENT);
-  const loggedIn = Auth.loggedIn();
+  const [addComment, { error }] = useMutation(ADD_COMMENT); // Mutation for adding a comment
+  const loggedIn = Auth.loggedIn(); // Check if the user is logged in
   let user = "";
 
+  // If logged in, decode the token to get the username
   if (loggedIn) {
     const token = Auth.getToken();
     const decodedToken = decode(token);
-    
     user = decodedToken.username || decodedToken.data?.username || "";
   } else {
-    navigate("/login");
+    navigate("/login"); // Redirect to login if not logged in
   }
 
-  // Function to capitalize the first letter
+  // Helper function to capitalize the first letter of a string
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  const [comments, setComments] = useState([]);
-  const [newCommentText, setNewCommentText] = useState("");
+  const [comments, setComments] = useState([]); // State to manage comments
+  const [newCommentText, setNewCommentText] = useState(""); // State for new comment input
 
+  // Function to handle comment submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const addedText = newCommentText.trim();
- 
+    e.preventDefault(); // Prevent default form submission
+    const addedText = newCommentText.trim(); // Get trimmed comment text
+
+    // Check if the comment is not empty
     if (addedText !== "") {
       try {
         const capitalizedUser = capitalizeFirstLetter(user || "Guest"); // Capitalize username
 
+        // Execute the mutation to add a comment
         const { data } = await addComment({
           variables: {
-            recipeId: recipeId,
-            commentText: addedText,
-            commentAuthor: capitalizedUser, // Use capitalized username
-            createdAt: new Date().toISOString(), // Use current date/time
+            recipeId: recipeId, // Recipe ID to associate the comment with
+            commentText: addedText, // Comment text
+            commentAuthor: capitalizedUser, // Capitalized author name
+            createdAt: new Date().toISOString(), // Current timestamp
           },
-          refetchQueries: [{ query: GET_SECRET_RECIPE, variables: { recipeId } }]
+          refetchQueries: [{ query: GET_SECRET_RECIPE, variables: { recipeId } }] // Refetch updated recipe data
         });
         
-        console.log("Response data:", data);
+        console.log("Response data:", data); // Log the response data
         if (data && data.addComment) {
-          setComments([...comments, data.addComment]);
+          setComments([...comments, data.addComment]); // Update the local comments state
         }
 
-        // Reset input fields
+        // Reset input field
         setNewCommentText("");
       } catch (error) {
-        console.error("Error adding comment:", error);
+        console.error("Error adding comment:", error); // Handle any errors
       }
     } else {
-      alert("Please enter a comment.");
+      alert("Please enter a comment."); // Alert if the input is empty
     }
   };
 
@@ -71,8 +74,8 @@ const CommentForm = ({ recipeId }) => {
             <input
               className="input"
               placeholder="Enter your comment"
-              value={newCommentText}
-              onChange={(e) => setNewCommentText(e.target.value)}
+              value={newCommentText} // Controlled input
+              onChange={(e) => setNewCommentText(e.target.value)} // Update state on input change
               required
             />
           </div>
