@@ -1,6 +1,6 @@
-import React, { useState } from "react"; 
-import { UPDATE_INSTRUCTION } from "../../utils/mutations"; 
-import { useMutation } from "@apollo/client"; 
+import React, { useState } from 'react'; 
+import { UPDATE_INSTRUCTION } from '../../utils/mutations'; 
+import { useMutation } from '@apollo/client'; 
 
 function UpdateInstruction({ instruction, instructions, setInstructions, index }) {
   const [updateInstruction] = useMutation(UPDATE_INSTRUCTION); 
@@ -8,7 +8,7 @@ function UpdateInstruction({ instruction, instructions, setInstructions, index }
   const [showForm, setShowForm] = useState(false); 
 
   const handleUpdateInstruction = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault(); // Prevent default form submission behavior
     try {
       const stepNumber = index + 1; 
       await updateInstruction({
