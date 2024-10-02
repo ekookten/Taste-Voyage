@@ -1,68 +1,43 @@
-import React, { useState } from "react"; // Importing React and useState hook
-import { UPDATE_INSTRUCTION, DELETE_INSTRUCTION } from "../../utils/mutations"; // Importing GraphQL mutations for updating and deleting instructions
-import { useMutation } from "@apollo/client"; // Importing useMutation from Apollo Client
+import React, { useState } from "react"; 
+import { UPDATE_INSTRUCTION } from "../../utils/mutations"; 
+import { useMutation } from "@apollo/client"; 
 
-function UpdateInstruction({
-  instruction,
-  instructions,
-  setInstructions,
-  index,
-}) {
-  const [updateInstruction] = useMutation(UPDATE_INSTRUCTION); // Hook to execute the update mutation
-  const [deleteInstruction] = useMutation(DELETE_INSTRUCTION); // Hook to execute the delete mutation
+function UpdateInstruction({ instruction, instructions, setInstructions, index }) {
+  const [updateInstruction] = useMutation(UPDATE_INSTRUCTION); 
+  const [newInstruction, setNewInstruction] = useState(instruction.text); 
+  const [showForm, setShowForm] = useState(false); 
 
-  const [newInstruction, setNewInstruction] = useState(instruction.text); // Local state for the new instruction text
-  const [showForm, setShowForm] = useState(false); // State to toggle the visibility of the update form
-
-  // Function to handle the instruction update
   const handleUpdateInstruction = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
+    e.preventDefault(); 
     try {
-      const stepNumber = index + 1; // Calculate the step number
+      const stepNumber = index + 1; 
       await updateInstruction({
         variables: {
-          instructionId: instruction._id, // ID of the instruction to update
-          text: newInstruction.trim(), // New instruction text
-          step: stepNumber.toString(), // Step number as string
+          instructionId: instruction._id, 
+          text: newInstruction.trim(), 
+          step: stepNumber.toString(), 
         },
       });
 
-      // Update the local state with the new instruction details
-      const updatedInstructions = instructions.map((i) => {
-        if (i._id === instruction._id) {
-          return { ...i, text: newInstruction }; // Update the instruction text
-        }
-        return i;
-      });
-      setInstructions(updatedInstructions); // Update the instructions state
-      setShowForm(false); // Hide the form after saving
+      const updatedInstructions = instructions.map((i) => 
+        i._id === instruction._id 
+          ? { ...i, text: newInstruction } 
+          : i
+      );
+      
+      setInstructions(updatedInstructions); 
+      setShowForm(false); 
     } catch (err) {
-      console.error(err); // Log any errors
+      console.error(err); 
     }
   };
 
-  // Function to handle instruction deletion
-  const handleDeleteInstruction = async () => {
-    try {
-      await deleteInstruction({
-        variables: { instructionId: instruction._id }, // ID of the instruction to delete
-      });
-
-      // Update local state to remove the deleted instruction
-      const updatedInstructions = instructions.filter(i => i._id !== instruction._id);
-      setInstructions(updatedInstructions); // Update the instructions state
-    } catch (err) {
-      console.error(err); // Log any errors
-    }
-  };
-
-  // Function to show the instruction input form
   const handleShowInstructionInput = () => {
     setShowForm(true);
   };
 
   return (
-    <div className="box">
+    <>
       {showForm ? (
         <form onSubmit={handleUpdateInstruction}>
           <div className="field has-addons">
@@ -71,14 +46,14 @@ function UpdateInstruction({
                 className="input is-fullwidth"
                 type="text"
                 value={newInstruction}
-                onChange={(e) => setNewInstruction(e.target.value)} // Update state on input change
+                onChange={(e) => setNewInstruction(e.target.value)} 
                 placeholder="New Instruction"
                 required
               />
             </div>
             <div className="control">
               <button
-                type="submit" // Use submit type to allow form submission with Enter key
+                type="submit" 
                 className="button is-small is-link"
               >
                 Save
@@ -88,28 +63,23 @@ function UpdateInstruction({
         </form>
       ) : (
         <div className="is-flex is-justify-content-space-between align-items-center">
-          <p className="is-marginless">
-            Step {instruction.step}: {instruction.text} {/* Display current instruction */}
+          <p style={{
+            marginBottom: '0',
+            paddingLeft: '10px',
+            width: '100%',
+          }}>
+            Step {instruction.step}: {instruction.text}
           </p>
-          <div>
-            <button
-              type="button"
-              className="button is-small is-link ml-2"
-              onClick={handleShowInstructionInput} // Show the edit form on button click
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              className="button is-small is-danger ml-2"
-              onClick={handleDeleteInstruction} // Delete instruction
-            >
-              Delete
-            </button>
-          </div>
+          <button
+            type="button"
+            className="button is-small is-link ml-2"
+            onClick={handleShowInstructionInput}
+          >
+            Edit
+          </button>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
