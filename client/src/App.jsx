@@ -9,11 +9,13 @@ import Auth from './utils/auth';
 import './App.css';
 
 const App = () => {
-  // Create a link to the GraphQL API endpoint
   const httpLink = createHttpLink({
-    uri: '/https://taste-voyage.onrender.com/graphql',  // Use environment variable for deployment
+    uri: 'https://taste-voyage.onrender.com/graphql',  
+
+
   });
 
+  
   // Set up the context to include the JWT token in the headers if the user is logged in
   const authLink = setContext((_, { headers }) => {
     const token = Auth.getToken(); // Retrieve the token from local storage
