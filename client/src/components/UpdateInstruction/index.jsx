@@ -9,6 +9,7 @@ function UpdateInstruction({ instruction, instructions, setInstructions, index }
 
   const handleUpdateInstruction = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
+    console.log("Submitting update for instruction:", newInstruction); // Debug log
     try {
       const stepNumber = index + 1; 
       await updateInstruction({
@@ -28,7 +29,7 @@ function UpdateInstruction({ instruction, instructions, setInstructions, index }
       setInstructions(updatedInstructions); 
       setShowForm(false); 
     } catch (err) {
-      console.error(err); 
+      console.error("Error updating instruction:", err); // Debug log for error
     }
   };
 

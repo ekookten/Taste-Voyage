@@ -11,6 +11,7 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
 
     const handleUpdateIngredient = async (e) => {
         e.preventDefault(); // Prevent default form submission behavior
+        console.log("Submitting update for ingredient:", newIngredientName); // Debug log
         try {
             await updateIngredient({
                 variables: {
@@ -30,7 +31,7 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
             setIngredients(updatedIngredients); 
             setShowForm(false); 
         } catch (err) {
-            console.error(err);
+            console.error("Error updating ingredient:", err); // Debug log for error
         }
     };
 
