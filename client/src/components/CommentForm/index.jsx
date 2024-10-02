@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { ADD_COMMENT } from "../../utils/mutations";
@@ -21,6 +21,11 @@ const CommentForm = ({ recipeId }) => {
     navigate("/login");
   }
 
+  // Function to capitalize the first letter
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   const [comments, setComments] = useState([]);
   const [newCommentText, setNewCommentText] = useState("");
 
@@ -30,21 +35,21 @@ const CommentForm = ({ recipeId }) => {
  
     if (addedText !== "") {
       try {
+        const capitalizedUser = capitalizeFirstLetter(user || "Guest"); // Capitalize username
+
         const { data } = await addComment({
           variables: {
             recipeId: recipeId,
             commentText: addedText,
-            commentAuthor: user || "Guest",
-            createdAt: "2023-09-30T12:34:56Z",   
+            commentAuthor: capitalizedUser, // Use capitalized username
+            createdAt: new Date().toISOString(), // Use current date/time
           },
-          
           refetchQueries: [{ query: GET_SECRET_RECIPE, variables: { recipeId } }]
         });
+        
         console.log("Response data:", data);
-        console.log(data.createdAt);
         if (data && data.addComment) {
           setComments([...comments, data.addComment]);
-          
         }
 
         // Reset input fields
@@ -60,11 +65,6 @@ const CommentForm = ({ recipeId }) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className="field">
-          <label className="label has-text-black">Your Name</label>
-          <div className="has-text-black">{user ? `Commenter: ${user}` : "Commenter: Guest"}</div>
-        </div>
-
         <div className="field">
           <label className="label has-text-black">Your Comment</label>
           <div className="control">

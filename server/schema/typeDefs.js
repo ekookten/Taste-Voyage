@@ -61,7 +61,7 @@ const typeDefs = `
   type Instruction {
     _id: ID!
     text: String!
-    step: Int!
+    step: String!
   }
 
  input recipeInput {

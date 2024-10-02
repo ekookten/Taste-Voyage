@@ -74,7 +74,7 @@ function UpdateInstruction({
               width: '100%',
               paddingLeft: '10px',
               }}>
-              Step {index + 1}: {instruction.text}
+              Step {instruction.step}: {instruction.text}
             </p>
             <button
               type="button"

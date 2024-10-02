@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client"; // Import Apollo Client's useMutation
+import { useMutation, useQuery } from "@apollo/client"; 
 import { SAVE_RECIPE } from "../utils/mutations"; 
 import { GET_ME } from "../utils/queries";
 import Auth from "../utils/auth";
@@ -10,9 +10,10 @@ const SearchRecipes = (props) => {
   const [searchedRecipes, setSearchedRecipes] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [savedRecipeIds, setSavedRecipeIds] = useState([]);
+  const [noResultsModal, setNoResultsModal] = useState(false); // State for modal visibility
 
-  const [saveRecipe] = useMutation(SAVE_RECIPE); // Use the SAVE_RECIPE mutation
-  const { loading, data } = useQuery(GET_ME); // Use the GET_ME query
+  const [saveRecipe] = useMutation(SAVE_RECIPE); 
+  const { loading, data } = useQuery(GET_ME); 
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -40,6 +41,14 @@ const SearchRecipes = (props) => {
 
       setSearchedRecipes(recipeInput);
       setSearchInput("");
+
+      // Show modal if no results are found
+      if (recipeInput.length === 0) {
+        setNoResultsModal(true);
+      } else {
+        setNoResultsModal(false);
+      }
+      
     } catch (err) {
       console.error(err);
     }
@@ -90,7 +99,7 @@ const SearchRecipes = (props) => {
     <>
       <div className="has-background-dark has-text-light p-5">
         <div className="container">
-          <h1 className="title has-text-light has-text-centered">Search for Recipes!</h1> {/* Centered header */}
+          <h1 className="title has-text-light has-text-centered">Search for Recipes!</h1>
           <form onSubmit={handleFormSubmit}>
             <div className="columns is-vcentered">
               <div className="column is-8">
@@ -119,7 +128,7 @@ const SearchRecipes = (props) => {
       </div>
   
       <div className="container">
-        <h2 className="title pt-5 has-text-centered"> {/* Centered results title */}
+        <h2 className="title pt-5 has-text-centered">
           {searchedRecipes.length
             ? `Viewing ${searchedRecipes.length} results:`
             : "Search for a recipe to begin"}
@@ -169,6 +178,21 @@ const SearchRecipes = (props) => {
           })}
         </div>
       </div>
+
+      {/* Modal for no results */}
+      {noResultsModal && (
+        <div className="modal is-active">
+          <div className="modal-background" onClick={() => setNoResultsModal(false)}></div>
+          <div className="modal-content">
+            <div className="box has-text-centered">
+              <h2 className="title">No Results Found</h2>
+              <p>Sorry, there are no results for "{searchInput}"</p>
+              <button className="button is-primary" onClick={() => setNoResultsModal(false)}>Close</button>
+            </div>
+          </div>
+          <button className="modal-close is-large" aria-label="close" onClick={() => setNoResultsModal(false)}></button>
+        </div>
+      )}
     </>
   );
 };
