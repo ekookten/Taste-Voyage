@@ -13,17 +13,21 @@ import decode from "jwt-decode";
 import UpdateIngredient from "../UpdateIngredient";
 import UpdateInstruction from "../UpdateInstruction";
 
+// Component for adding a new recipe
 const AddRecipe = () => {
+    // Hook to navigate programmatically
     const navigate = useNavigate();
+    
+    // GraphQL mutations to add and remove ingredients and instructions
     const [addSecretRecipe] = useMutation(ADD_SECRET_RECIPE);
     const [addIngredient] = useMutation(ADD_INGREDIENT);
     const [addInstruction] = useMutation(ADD_INSTRUCTION);
     const [removeIngredient] = useMutation(REMOVE_INGREDIENT);
     const [removeInstruction] = useMutation(REMOVE_INSTRUCTION);
 
+    // Check if user is logged in; if not, redirect to login
     const loggedIn = Auth.loggedIn();
     let username = "";
-
     if (loggedIn) {
         const token = Auth.getToken();
         const decodedToken = decode(token);
@@ -32,35 +36,39 @@ const AddRecipe = () => {
         navigate("/login");
     }
 
+    // Helper function to capitalize the first letter of a string
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
-    const [title, setTitle] = useState("");
-    const [author] = useState(capitalizeFirstLetter(username));
-    const [ingredients, setIngredients] = useState([]);
-    const [newIngredientName, setNewIngredientName] = useState("");
-    const [newIngredientUnit, setNewIngredientUnit] = useState("");
-    const [newIngredientQuantity, setNewIngredientQuantity] = useState("");
-    const [showIngredientInput, setShowIngredientInput] = useState(false);
-    const [instructions, setInstructions] = useState([]);
-    const [newInstruction, setNewInstruction] = useState("");
-    const [showInstructionInput, setShowInstructionInput] = useState(false);
-    const [image, setImage] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalMessage, setModalMessage] = useState("");
+    // State variables for form inputs and recipe data
+    const [title, setTitle] = useState(""); // Recipe title
+    const [author] = useState(capitalizeFirstLetter(username)); // Author's name
+    const [ingredients, setIngredients] = useState([]); // List of ingredients
+    const [newIngredientName, setNewIngredientName] = useState(""); // New ingredient name
+    const [newIngredientUnit, setNewIngredientUnit] = useState(""); // New ingredient unit
+    const [newIngredientQuantity, setNewIngredientQuantity] = useState(""); // New ingredient quantity
+    const [showIngredientInput, setShowIngredientInput] = useState(false); // Toggle for ingredient input
+    const [instructions, setInstructions] = useState([]); // List of instructions
+    const [newInstruction, setNewInstruction] = useState(""); // New instruction text
+    const [showInstructionInput, setShowInstructionInput] = useState(false); // Toggle for instruction input
+    const [image, setImage] = useState(null); // Recipe image
+    const [isModalOpen, setIsModalOpen] = useState(false); // Toggle for modal display
+    const [modalMessage, setModalMessage] = useState(""); // Message to display in modal
 
+    // Function to handle image file selection
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImage(reader.result);
+                setImage(reader.result); // Store the image data in state
             };
             reader.readAsDataURL(file);
         }
     };
 
+    // Function to add a new ingredient
     const handleAddIngredient = async () => {
         if (newIngredientName.trim() && newIngredientUnit.trim() && newIngredientQuantity.trim()) {
             try {
@@ -74,10 +82,12 @@ const AddRecipe = () => {
                     },
                 });
 
+                // Update ingredients state with the new ingredient
                 if (data && data.addIngredient) {
                     setIngredients([...ingredients, data.addIngredient]);
                 }
 
+                // Reset the input fields
                 setNewIngredientName("");
                 setNewIngredientUnit("");
                 setNewIngredientQuantity("");
@@ -90,11 +100,12 @@ const AddRecipe = () => {
         }
     };
 
+    // Function to add a new instruction
     const handleAddInstruction = async () => {
         if (newInstruction.trim()) {
             try {
                 const capitalizedInstruction = newInstruction.charAt(0).toUpperCase() + newInstruction.slice(1);
-                const stepNumber = instructions.length + 1;
+                const stepNumber = instructions.length + 1; // Determine step number based on existing instructions
 
                 const { data } = await addInstruction({
                     variables: {
@@ -103,10 +114,12 @@ const AddRecipe = () => {
                     },
                 });
 
+                // Update instructions state with the new instruction
                 if (data && data.addInstruction) {
                     setInstructions([...instructions, { ...data.addInstruction, step: stepNumber.toString() }]);
                 }
 
+                // Reset the input field
                 setNewInstruction("");
                 setShowInstructionInput(false);
             } catch (error) {
@@ -117,29 +130,35 @@ const AddRecipe = () => {
         }
     };
 
+    // Function to remove an ingredient
     const handleRemoveIngredient = async (e) => {
         const ingredientId = e.target.parentElement.getAttribute("data-id");
         try {
             await removeIngredient({ variables: { ingredientId } });
+            // Update ingredients state to remove the deleted ingredient
             setIngredients(ingredients.filter((ingredient) => ingredient._id !== ingredientId));
         } catch (error) {
             console.error("Error removing ingredient:", error);
         }
     };
 
+    // Function to remove an instruction
     const handleRemoveInstruction = async (e) => {
         const instructionId = e.target.parentElement.getAttribute("data-id");
         try {
             await removeInstruction({ variables: { instructionId } });
+            // Update instructions state to remove the deleted instruction
             setInstructions(instructions.filter((instruction) => instruction._id !== instructionId));
         } catch (error) {
             console.error("Error removing instruction:", error);
         }
     };
 
+    // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Ensure there are ingredients and instructions before submitting
         if (ingredients.length === 0 || instructions.length === 0) {
             alert("Please complete the form.");
             return;
@@ -147,8 +166,8 @@ const AddRecipe = () => {
 
         try {
             const defaultImage = "https://static.vecteezy.com/system/resources/previews/005/292/398/non_2x/cute-sushi-roll-character-confused-free-vector.jpg";
-            const recipeImage = image || defaultImage;
-            const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
+            const recipeImage = image || defaultImage; // Use provided image or a default
+            const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1); // Capitalize title
 
             const secretRecipeData = {
                 title: capitalizedTitle,
@@ -164,8 +183,10 @@ const AddRecipe = () => {
                 image: recipeImage,
             };
 
+            // Call the mutation to add the secret recipe
             await addSecretRecipe({ variables: { secretRecipeData } });
 
+            // Reset form fields
             setTitle("");
             setIngredients([]);
             setNewIngredientName("");
@@ -175,9 +196,11 @@ const AddRecipe = () => {
             setNewInstruction("");
             setImage(null);
 
+            // Show success message in modal
             setModalMessage("Your Secret Recipe was created successfully!");
             setIsModalOpen(true);
 
+            // Redirect after a brief delay
             setTimeout(() => {
                 setIsModalOpen(false);
                 navigate(`/me`);
@@ -211,7 +234,7 @@ const AddRecipe = () => {
                             className="input"
                             type="text"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={(e) => setTitle(e.target.value)} // Update title state on input change
                             required
                         />
                     </div>
@@ -312,7 +335,7 @@ const AddRecipe = () => {
                 <div className="field">
                     <label className="label">Image:</label>
                     <div className="control">
-                        <input className="input" type="file" onChange={handleImageChange} />
+                        <input className="input" type="file" onChange={handleImageChange} /> {/* Handle image file input */}
                     </div>
                 </div>
 
@@ -326,7 +349,7 @@ const AddRecipe = () => {
 
                 <div className="author-info">
                     <h2 className="subtitle has-text-centered">
-                        <strong className="is-6">Creator:</strong> {author}
+                        <strong className="is-6">Creator:</strong> {author} {/* Display the recipe creator's name */}
                     </h2>
                 </div>
             </form>

@@ -9,34 +9,37 @@ import Auth from './utils/auth';
 import './App.css';
 
 const App = () => {
+  // Create a link to the GraphQL API endpoint
   const httpLink = createHttpLink({
     uri: 'https://taste-voyage.onrender.com/graphql',  // Use environment variable for deployment
   });
 
-  // Add JWT token to headers if user is logged in
+  // Set up the context to include the JWT token in the headers if the user is logged in
   const authLink = setContext((_, { headers }) => {
-    const token = Auth.getToken();
+    const token = Auth.getToken(); // Retrieve the token from local storage
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : '',  // Correct token format
+        authorization: token ? `Bearer ${token}` : '',  // Set the authorization header if the token exists
       },
     };
   });
 
+  // Create an Apollo Client instance with the HTTP link and caching
   const client = new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
+    link: authLink.concat(httpLink), // Combine the auth link and the HTTP link
+    cache: new InMemoryCache(), // Set up in-memory caching for Apollo
   });
 
   return (
+    // Provide the Apollo Client to the entire app
     <ApolloProvider client={client}>
-      <div className="app-container" >
-        <Navbar />
+      <div className="app-container">
+        <Navbar /> // Render the navigation bar
         <div className="content">
-          <Outlet />
+          <Outlet /> // Render the nested routes here
         </div>
-        <Footer />
+        <Footer /> // Render the footer
       </div>
     </ApolloProvider>
   );

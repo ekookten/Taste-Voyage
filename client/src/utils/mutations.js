@@ -1,5 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 
+// Mutation to add a new secret recipe
 export const ADD_SECRET_RECIPE = gql`
   mutation addSecretRecipe($secretRecipeData: secretRecipeInput!) {
     addSecretRecipe(secretRecipeData: $secretRecipeData) {
@@ -20,6 +21,8 @@ export const ADD_SECRET_RECIPE = gql`
     }
   }
 `;
+
+// Mutation to remove an existing secret recipe
 export const REMOVE_SECRET_RECIPE = gql`
   mutation removeSecretRecipe($recipeId: ID!) {
     removeSecretRecipe(recipeId: $recipeId) {
@@ -42,6 +45,8 @@ export const REMOVE_SECRET_RECIPE = gql`
     }
   }
 `;
+
+// Mutation to remove a saved recipe
 export const REMOVE_RECIPE = gql`
   mutation removeRecipe($recipeId: ID!) {
     removeRecipe(recipeId: $recipeId) {
@@ -57,6 +62,7 @@ export const REMOVE_RECIPE = gql`
   }
 `;
 
+// Mutation to add a new ingredient to a recipe
 export const ADD_INGREDIENT = gql`
   mutation addIngredient($name: String!, $unit: String!, $quantity: Float!) {
     addIngredient(name: $name, unit: $unit, quantity: $quantity) {
@@ -67,6 +73,8 @@ export const ADD_INGREDIENT = gql`
     }
   }
 `;
+
+// Mutation to add a new instruction to a recipe
 export const ADD_INSTRUCTION = gql`
   mutation addInstruction($step: String!, $text: String!) {
     addInstruction(step: $step, text: $text) {
@@ -76,6 +84,7 @@ export const ADD_INSTRUCTION = gql`
     }
   }
 `;
+
 // Mutation to save a recipe for the logged-in user
 export const SAVE_RECIPE = gql`
   mutation saveRecipe($recipeData: recipeInput!) {
@@ -92,8 +101,6 @@ export const SAVE_RECIPE = gql`
   }
 `;
 
-// Mutation to remove a recipe from the saved list
-
 // Mutation to add a new user
 export const ADD_USER = gql`
   mutation addUser($username: String!, $email: String!, $password: String!) {
@@ -102,11 +109,12 @@ export const ADD_USER = gql`
       user {
         _id
         username
-    
       }
     }
   }
 `;
+
+// Mutation to add a comment to a recipe
 export const ADD_COMMENT = gql`
   mutation addComment(
     $recipeId: ID!
@@ -142,6 +150,7 @@ export const LOGIN_USER = gql`
   }
 `;
 
+// Mutation to remove an ingredient from a recipe
 export const REMOVE_INGREDIENT = gql`
   mutation removeIngredient($ingredientId: ID!) {
     removeIngredient(ingredientId: $ingredientId) {
@@ -153,6 +162,7 @@ export const REMOVE_INGREDIENT = gql`
   }
 `;
 
+// Mutation to remove an instruction from a recipe
 export const REMOVE_INSTRUCTION = gql`
   mutation removeInstruction($instructionId: ID!) {
     removeInstruction(instructionId: $instructionId) {
@@ -163,6 +173,7 @@ export const REMOVE_INSTRUCTION = gql`
   }
 `;
 
+// Mutation to update an existing ingredient
 export const UPDATE_INGREDIENT = gql`
   mutation updateIngredient(
     $ingredientId: ID!
@@ -184,6 +195,7 @@ export const UPDATE_INGREDIENT = gql`
   }
 `;
 
+// Mutation to update an existing instruction
 export const UPDATE_INSTRUCTION = gql`
   mutation updateInstruction(
     $instructionId: ID!

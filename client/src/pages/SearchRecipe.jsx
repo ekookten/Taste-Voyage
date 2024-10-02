@@ -3,44 +3,47 @@ import { Link } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client"; 
 import { SAVE_RECIPE } from "../utils/mutations"; 
 import { GET_ME } from "../utils/queries";
-import Auth from "../utils/auth";
-import { searchSpoonacular } from "../utils/API";
+import Auth from "../utils/auth"; // Import authentication utility
+import { searchSpoonacular } from "../utils/API"; // Import API function for searching recipes
 
 const SearchRecipes = (props) => {
-  const [searchedRecipes, setSearchedRecipes] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [savedRecipeIds, setSavedRecipeIds] = useState([]);
-  const [noResultsModal, setNoResultsModal] = useState(false); // State for modal visibility
+  const [searchedRecipes, setSearchedRecipes] = useState([]); // State to hold searched recipes
+  const [searchInput, setSearchInput] = useState(""); // State for search input
+  const [savedRecipeIds, setSavedRecipeIds] = useState([]); // State to hold saved recipe IDs
+  const [noResultsModal, setNoResultsModal] = useState(false); // State for modal visibility when no results found
 
-  const [saveRecipe] = useMutation(SAVE_RECIPE); 
-  const { loading, data } = useQuery(GET_ME); 
+  const [saveRecipe] = useMutation(SAVE_RECIPE); // Mutation to save a recipe
+  const { loading, data } = useQuery(GET_ME); // Query to get current user data
 
+  // Handle form submission for searching recipes
   const handleFormSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission behavior
 
     if (!searchInput) {
-      return false;
+      return false; // Do nothing if search input is empty
     }
    
+    // Set saved recipe IDs for comparison
     setSavedRecipeIds(data?.me.savedRecipes.map((recipe) => recipe.recipeId) || []);
     
     try {
-      const response = await searchSpoonacular(searchInput);
+      const response = await searchSpoonacular(searchInput); // Call API to search for recipes
 
       if (!response.ok) {
-        throw new Error("Something went wrong!");
+        throw new Error("Something went wrong!"); // Handle API errors
       }
 
-      const { results } = await response.json();
+      const { results } = await response.json(); // Parse the JSON response
 
+      // Map results to the format expected by the application
       const recipeInput = results.map((recipe) => ({
         recipeId: recipe.id,
-        title: recipe.title || "No Title Available",
+        title: recipe.title || "No Title Available", // Fallback for title
         image: recipe.image,
       }));
 
-      setSearchedRecipes(recipeInput);
-      setSearchInput("");
+      setSearchedRecipes(recipeInput); // Update state with the new recipes
+      setSearchInput(""); // Clear the search input
 
       // Show modal if no results are found
       if (recipeInput.length === 0) {
@@ -50,24 +53,25 @@ const SearchRecipes = (props) => {
       }
       
     } catch (err) {
-      console.error(err);
+      console.error(err); // Log any errors that occur during the search
     }
   };
 
+  // Handle saving a recipe
   const handleSaveRecipe = async (recipeId) => {
     const recipeToSave = searchedRecipes.find(
-      (recipe) => recipe.recipeId === recipeId
+      (recipe) => recipe.recipeId === recipeId // Find the recipe in the searched results
     );
 
     if (!recipeToSave) {
-      console.error('Recipe not found for the given recipeId');
+      console.error('Recipe not found for the given recipeId'); // Log error if recipe is not found
       return;
     }
 
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
+    const token = Auth.loggedIn() ? Auth.getToken() : null; // Get the auth token
 
     if (!token) {
-      return false;
+      return false; // Exit if not logged in
     }
 
     try {
@@ -81,17 +85,17 @@ const SearchRecipes = (props) => {
         },
         context: {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // Include auth token in the request
           },
         },
       });
 
       if (data) {
-        setSavedRecipeIds([...savedRecipeIds, recipeToSave.recipeId]);
+        setSavedRecipeIds([...savedRecipeIds, recipeToSave.recipeId]); // Update saved recipe IDs
       }
       
     } catch (err) {
-      console.error(err);
+      console.error(err); // Log any errors that occur during saving
     }
   };
 
@@ -100,7 +104,7 @@ const SearchRecipes = (props) => {
       <div className="has-background-dark has-text-light p-5">
         <div className="container">
           <h1 className="title has-text-light has-text-centered">Search for Recipes!</h1>
-          <form onSubmit={handleFormSubmit}>
+          <form onSubmit={handleFormSubmit}> {/* Form for searching recipes */}
             <div className="columns is-vcentered">
               <div className="column is-8">
                 <div className="control">
@@ -108,7 +112,7 @@ const SearchRecipes = (props) => {
                     className="input is-large"
                     name="searchInput"
                     value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
+                    onChange={(e) => setSearchInput(e.target.value)} // Update search input on change
                     type="text"
                     placeholder="Search for a recipe"
                   />
@@ -143,7 +147,7 @@ const SearchRecipes = (props) => {
                       <figure className="image is-4by3">
                         <img
                           src={recipe.image} 
-                          alt={`The cover for ${recipe.title}`}
+                          alt={`The cover for ${recipe.title}`} // Alt text for image
                         />
                       </figure>
                     </div>
@@ -153,10 +157,10 @@ const SearchRecipes = (props) => {
                     {Auth.loggedIn() && (
                       <button
                         disabled={savedRecipeIds?.some(
-                          (savedRecipeId) => savedRecipeId === recipe.recipeId
+                          (savedRecipeId) => savedRecipeId === recipe.recipeId // Disable button if already saved
                         )}
                         className="button is-info is-fullwidth"
-                        onClick={() => handleSaveRecipe(recipe.recipeId)}
+                        onClick={() => handleSaveRecipe(recipe.recipeId)} // Save recipe on click
                       >
                         {savedRecipeIds?.some(
                           (savedRecipeId) => savedRecipeId === recipe.recipeId
@@ -166,7 +170,7 @@ const SearchRecipes = (props) => {
                       </button>
                     )}
                     <Link
-                      to={`/recipe/${recipe.recipeId}`}
+                      to={`/recipe/${recipe.recipeId}`} // Link to recipe details page
                       className="button is-primary is-fullwidth mt-3"
                     >
                       View Details
