@@ -28,6 +28,12 @@ const userSchema = new Schema(
         ref: 'Recipe',
       },
     ],
+    secretRecipes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'SecretRecipe',
+      },
+    ],
   },
   {
     toJSON: {

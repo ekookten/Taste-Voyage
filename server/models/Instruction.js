@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
+
 
 const InstructionSchema = new Schema({
   step: {
-    type: Number,
+    type: String,
     required: true,
   },
   text: {
@@ -12,4 +12,7 @@ const InstructionSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Instruction', InstructionSchema);
+
+const Instruction = model('Instruction', InstructionSchema);
+
+module.exports = Instruction;

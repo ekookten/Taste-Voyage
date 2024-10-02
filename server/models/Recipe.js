@@ -1,20 +1,17 @@
 const { Schema, model } = require('mongoose');
-
 const recipeSchema = new Schema({
   authors: [
     {
       type: String,
     },
   ],
-  summary: {
-    type: String,
-    required: true,
-  },
   image: {
     type: String,
+    required: false
   },
-  link: {
-    type: String,
+  recipeId: {
+    type: Number,
+    required: true,
   },
   title: {
     type: String,
@@ -34,21 +31,8 @@ const recipeSchema = new Schema({
   ],
   comments: [
     {
-      commentText: {
-        type: String,
-        required: true,
-        minlength: 1,
-        maxlength: 280,
-      },
-      commentAuthor: {
-        type: String,
-        required: true,
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-        get: (timestamp) => timestamp.toLocaleString(),
-      },
+      type: Schema.Types.ObjectId,
+      ref: 'Comment',
     },
   ],
 });

@@ -1,13 +1,15 @@
 const User = require('./User');
 const Recipe = require('./Recipe');
-const Comment = require('./Comment');
 const Ingredient = require('./Ingredient');
 const Instruction = require('./Instruction'); 
+const SecretRecipe = require('./SecretRecipe');
+const Comment = require('./Comment');
 
 module.exports = {
     User,
     Recipe,
-    Comment,
     Ingredient,
-    Instruction
+    Instruction,
+    SecretRecipe,
+    Comment,
 };

@@ -1,19 +1,25 @@
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import 'bulma/css/bulma.min.css';
 
-import App from './App.jsx';
+import App from './App';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import SingleRecipe from './pages/SingleRecipe';
 import Profile from './pages/Profile';
-import ErrorPage from './pages/ErrorPage';
+import Error from './pages/Error';
+import SearchRecipe from './pages/SearchRecipe';
+import AddRecipe from './components/AddRecipe';
+import SecretRecipes from './components/SecretRecipes';
+import SingleSecretRecipe from './pages/SingleSecretRecipe';
+
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <ErrorPage />,
+    errorElement: <Error />,
     children: [
       {
         index: true,
@@ -24,13 +30,28 @@ const router = createBrowserRouter([
       }, {
         path: '/signup',
         element: <Signup />
-      }, {
-        path: '/profiles/:username',
-        element: <Profile />
-      }, {
+      },
+      {
+        path: '/search',
+        element: <SearchRecipe />
+      }, 
+      {
+        path: '/secret-recipes',
+        element: <SecretRecipes />
+      }, 
+      {
+        path: '/secret/:recipeId',
+        element: <SingleSecretRecipe />
+      }, 
+      {
+        path: 'add-recipe',
+        element: <AddRecipe />
+      },
+      {
         path: '/me',
         element: <Profile />
-      }, {
+      },
+      {
         path: '/recipe/:recipeId',
         element: <SingleRecipe />
       }

@@ -3,21 +3,23 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@ap
 import { setContext } from '@apollo/client/link/context';
 import { Outlet } from 'react-router-dom';
 
-import Header from './components/Header';
+import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Auth from './utils/auth';
+import './App.css';
 
 const App = () => {
-  // Apollo Client setup with HTTP Link
   const httpLink = createHttpLink({
-    uri: process.env.GRAPHQL_URI || 'http://localhost:4000/graphql',
+    uri: 'http://localhost:4000/graphql',  // Use environment variable for deployment
   });
 
-  // Adding API key to headers
+  // Add JWT token to headers if user is logged in
   const authLink = setContext((_, { headers }) => {
+    const token = Auth.getToken();
     return {
       headers: {
         ...headers,
-        authorization: `ApiKey ${process.env.API_KEY}`,
+        authorization: token ? `Bearer ${token}` : '',  // Correct token format
       },
     };
   });
@@ -29,9 +31,9 @@ const App = () => {
 
   return (
     <ApolloProvider client={client}>
-      <div>
-        <Header />
-        <div>
+      <div className="app-container" >
+        <Navbar />
+        <div className="content">
           <Outlet />
         </div>
         <Footer />
