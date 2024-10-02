@@ -10,7 +10,7 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
     const [showForm, setShowForm] = useState(false); 
 
     const handleUpdateIngredient = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default form submission behavior
         try {
             await updateIngredient({
                 variables: {
