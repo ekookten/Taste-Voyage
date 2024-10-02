@@ -10,7 +10,7 @@ import './App.css';
 
 const App = () => {
   const httpLink = createHttpLink({
-    uri: 'http://localhost:4000/graphql',  // Use environment variable for deployment
+    uri: 'https://taste-voyage.onrender.com/graphql',  // Use environment variable for deployment
   });
 
   // Add JWT token to headers if user is logged in
