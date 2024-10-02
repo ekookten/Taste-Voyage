@@ -140,18 +140,18 @@ const AddRecipe = () => {
             alert("Please complete the form.");
             return;
         }
-
+    
         try {
             const defaultImage = "https://static.vecteezy.com/system/resources/previews/005/292/398/non_2x/cute-sushi-roll-character-confused-free-vector.jpg";
             const recipeImage = image || defaultImage;
             const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
-
+    
             const secretRecipeData = {
                 title: capitalizedTitle,
                 ingredients: ingredients.map((ingredient) => ({
                     name: ingredient.name,
                     unit: ingredient.unit,
-                    quantity: ingredient.quantity.toString(),
+                    quantity: ingredient.quantity,  // Make sure this is a number
                 })),
                 instructions: instructions.map((instruction) => ({
                     step: instruction.step.toString(),
@@ -159,9 +159,10 @@ const AddRecipe = () => {
                 })),
                 image: recipeImage,
             };
-
+    
             await addSecretRecipe({ variables: { secretRecipeData } });
-
+    
+            // Resetting state after successful submission
             setTitle("");
             setIngredients([]);
             setNewIngredientName("");
@@ -170,10 +171,10 @@ const AddRecipe = () => {
             setInstructions([]);
             setNewInstruction("");
             setImage(null);
-
+    
             setModalMessage("Your Secret Recipe was created successfully!");
             setIsModalOpen(true);
-
+    
             setTimeout(() => {
                 setIsModalOpen(false);
                 navigate(`/me`);
@@ -182,6 +183,7 @@ const AddRecipe = () => {
             console.error("Error adding recipe:", error);
         }
     };
+
 
     return (
         <div className="container box has-background-light" style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>

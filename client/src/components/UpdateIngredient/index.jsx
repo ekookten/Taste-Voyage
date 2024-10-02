@@ -10,28 +10,33 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
     const [showForm, setShowForm] = useState(false); 
 
     const handleUpdateIngredient = async (e) => {
-        e.preventDefault(); // Prevent default form submission behavior
-        console.log("Submitting update for ingredient:", newIngredientName); // Debug log
+        e.preventDefault(); 
+
         try {
-            await updateIngredient({
+            const response = await updateIngredient({
                 variables: {
                     ingredientId: ingredient._id,
                     name: newIngredientName.trim(),
                     unit: newIngredientUnit.trim(),
-                    quantity: parseFloat(newIngredientQuantity.trim()), 
+                    quantity: parseFloat(newIngredientQuantity), 
                 }
             });
 
-            const updatedIngredients = ingredients.map(i => 
-                i._id === ingredient._id 
-                    ? { ...i, name: newIngredientName, unit: newIngredientUnit, quantity: newIngredientQuantity } 
-                    : i
-            );
+            if (response.data.updateIngredient) {
+                const updatedIngredients = ingredients.map(i => 
+                    i._id === ingredient._id 
+                        ? { ...i, name: newIngredientName, unit: newIngredientUnit, quantity: parseFloat(newIngredientQuantity) } 
+                        : i
+                );
 
-            setIngredients(updatedIngredients); 
-            setShowForm(false); 
+                setIngredients(updatedIngredients); 
+                setShowForm(false); 
+            } else {
+                throw new Error("Ingredient update failed");
+            }
         } catch (err) {
-            console.error("Error updating ingredient:", err); // Debug log for error
+            console.error("Error updating ingredient:", err);
+            alert("Failed to update ingredient. Please try again.");
         }
     };
 
@@ -78,6 +83,7 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
                             <button
                                 type="submit"
                                 className="button is-small is-link is-fullwidth"
+                                onClick={(handleUpdateIngredient)}
                             >
                                 Save
                             </button>
@@ -85,11 +91,13 @@ function UpdateIngredient({ ingredient, ingredients, setIngredients }) {
                     </div>
                 </form>
             ) : (
-                <div className="is-flex is-justify-content-space-between align-items-center">
+                <div className="is-flex is-justify-content-space-between align-items-center" style={{ flexWrap: 'wrap' }}>
                     <p style={{
                         marginBottom: '0',
                         paddingLeft: '10px',
                         width: '100%',
+                        wordBreak: 'break-word', // This will wrap long words
+                        overflowWrap: 'break-word', // Ensure it wraps correctly
                     }}>
                         {ingredient.name}, {ingredient.quantity} {ingredient.unit}
                     </p>
