@@ -59,6 +59,10 @@ const Profile = () => {
     }
   };
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -70,7 +74,7 @@ const Profile = () => {
   return (
     <div className="container">
       <h2 className="title has-text-centered is-size-4 box has-background-light has-text-black">
-        {Auth.loggedIn() ? `${userData.username}'s Saved Recipes` : 'Log in to see saved recipes'}
+        {Auth.loggedIn() ? `${capitalizeFirstLetter(userData.username)}'s Saved Recipes` : 'Log in to see saved recipes'}
       </h2>
   
       {savedRecipes.length > 0 ? (
@@ -109,7 +113,7 @@ const Profile = () => {
       )}
 
       <h2 className="title has-text-centered is-size-4 box has-background-light has-text-black">
-        {Auth.loggedIn() ? `${userData.username}'s Secret Recipes` : 'Log in to see saved recipes'}
+        {Auth.loggedIn() ? `${capitalizeFirstLetter(userData.username)}'s Secret Recipes` : 'Log in to see saved recipes'}
       </h2>
       
       {secretRecipes.length > 0 ? (
@@ -144,8 +148,8 @@ const Profile = () => {
         </div>
       ) : (
         <div className="notification is-warning has-text-centered" style={{ maxWidth: '300px', margin: '0 auto' }}>
-        You Don't Have Any Secret Recipes.
-      </div>
+          You Don't Have Any Secret Recipes.
+        </div>
       )}
   
       {/* Add Recipe Button */}

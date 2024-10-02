@@ -32,8 +32,12 @@ const AddRecipe = () => {
         navigate("/login");
     }
 
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
     const [title, setTitle] = useState("");
-    const [author] = useState(username);
+    const [author] = useState(capitalizeFirstLetter(username));
     const [ingredients, setIngredients] = useState([]);
     const [newIngredientName, setNewIngredientName] = useState("");
     const [newIngredientUnit, setNewIngredientUnit] = useState("");
@@ -100,7 +104,7 @@ const AddRecipe = () => {
                 });
 
                 if (data && data.addInstruction) {
-                    setInstructions([...instructions, data.addInstruction]);
+                    setInstructions([...instructions, { ...data.addInstruction, step: stepNumber.toString() }]);
                 }
 
                 setNewInstruction("");
@@ -171,11 +175,9 @@ const AddRecipe = () => {
             setNewInstruction("");
             setImage(null);
 
-            // Show success modal
             setModalMessage("Your Secret Recipe was created successfully!");
             setIsModalOpen(true);
 
-            // Redirect after 2 seconds
             setTimeout(() => {
                 setIsModalOpen(false);
                 navigate(`/me`);
